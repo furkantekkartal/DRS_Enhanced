@@ -27,7 +27,7 @@ public class DRSServer {
             while (running) {
                 try {
                     Socket clientSocket = serverSocket.accept();
-                   executor.execute(new ClientHandler(clientSocket));
+                    executor.execute(new ClientHandler(clientSocket));
                 } catch (SocketException e) {
                     if (!running) break;
                 }
