@@ -20,7 +20,7 @@ import javafx.beans.property.SimpleStringProperty;
  *
  * @author 12223508
  */
-public class C_LawEnforcement {
+public class C_LawEnforcement extends BaseController {
 
     // FXML annotated fields
     @FXML
@@ -138,15 +138,15 @@ public class C_LawEnforcement {
      * Loads active reports from the database and populates the table.
      */
     private void loadActiveReports() {
-    try {
-        activeReports.clear();
-        activeReports.addAll(lawEnforcementDepartment.getActiveReports());
-    } catch (SQLException e) {
-        activeReports.clear();
-        reportTable.setItems(FXCollections.observableArrayList());
-        System.err.println("Cannot load data: " + e.getMessage());
+        try {
+            activeReports.clear();
+            activeReports.addAll(lawEnforcementDepartment.getActiveReports());
+        } catch (SQLException e) {
+            activeReports.clear();
+            reportTable.setItems(FXCollections.observableArrayList());
+            System.err.println("Cannot load data: " + e.getMessage());
+        }
     }
-}
 
     /**
      * Updates the report details area with information from the selected
@@ -253,22 +253,17 @@ public class C_LawEnforcement {
      */
     @FXML
     private void handleRefreshReports() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            activeReports.clear();
+            reportTable.setItems(FXCollections.observableArrayList());
+            clearAllFields();
+            System.out.println("Cannot refresh reports: Server is not running.");
+            return;
+        }
         loadActiveReports();
         reportTable.refresh();
-    }
-
-    /**
-     * Displays an alert dialog with the given title and content.
-     *
-     * @param title The title of the alert dialog
-     * @param content The content of the alert dialog
-     */
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
+        System.out.println("Reports refreshed successfully.");
     }
 
     /**
@@ -279,5 +274,21 @@ public class C_LawEnforcement {
     public void setCurrentUser(String username) {
         this.currentUser = username;
         userLabel.setText("Logged in as: " + username);
+    }
+
+    private void clearAllFields() {
+        // Clear text areas
+        reportDetailsArea.clear();
+        communicationLogArea.clear();
+        resourcesNeededArea.clear();
+
+        // Clear input fields
+        newLogEntryField.clear();
+
+        // Reset combo boxes
+        statusComboBox.getSelectionModel().clearSelection();
+
+        // Clear table selection
+        reportTable.getSelectionModel().clearSelection();
     }
 }

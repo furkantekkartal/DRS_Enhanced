@@ -17,10 +17,10 @@ import javafx.beans.property.SimpleStringProperty;
 /**
  * Controller class for the Fire Department interface. Handles the interaction
  * between the user interface and the Fire Department model.
- * 
+ *
  * @author 12223508
  */
-public class C_Fire {
+public class C_Fire extends BaseController {
 
     // FXML annotated fields
     @FXML
@@ -141,16 +141,16 @@ public class C_Fire {
     /**
      * Loads active reports from the database and populates the table.
      */
-private void loadActiveReports() {
-    try {
-        activeReports.clear();
-        activeReports.addAll(fireDepartment.getActiveReports());
-    } catch (SQLException e) {
-        activeReports.clear();
-        reportTable.setItems(FXCollections.observableArrayList());
-        System.err.println("Cannot load data: " + e.getMessage());
+    private void loadActiveReports() {
+        try {
+            activeReports.clear();
+            activeReports.addAll(fireDepartment.getActiveReports());
+        } catch (SQLException e) {
+            activeReports.clear();
+            reportTable.setItems(FXCollections.observableArrayList());
+            System.err.println("Cannot load data: " + e.getMessage());
+        }
     }
-}
 
     /**
      * Updates the report details area with information from the selected
@@ -190,6 +190,11 @@ private void loadActiveReports() {
      */
     @FXML
     private void handleSubmitStatus() throws SQLException {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            System.out.println("Cannot submit status: Server is not running.");
+            return;
+        }
         if (selectedReport == null) {
             showAlert("Error", "Please select a report first.");
             return;
@@ -204,6 +209,7 @@ private void loadActiveReports() {
         fireDepartment.updateStatus(selectedReport, selectedStatus);
         showAlert("Success", "Status updated successfully.");
         loadActiveReports(); // Refresh the table
+        System.out.println("Status submitted successfully.");
     }
 
     /**
@@ -211,6 +217,11 @@ private void loadActiveReports() {
      */
     @FXML
     private void handleAddLogEntry() throws SQLException {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            System.out.println("Cannot submit status: Server is not running.");
+            return;
+        }
         if (selectedReport == null) {
             showAlert("Error", "Please select a report first.");
             return;
@@ -230,6 +241,7 @@ private void loadActiveReports() {
 
         fireDepartment.addCommunicationLogEntry(selectedReport, logEntry);
         updateCommunicationLog(selectedReport);
+        System.out.println("Log added successfully.");
         newLogEntryField.clear();
     }
 
@@ -255,23 +267,19 @@ private void loadActiveReports() {
      * Handles the refresh of the reports table.
      */
     @FXML
-    private void handleRefreshReports() throws SQLException {
+    private void handleRefreshReports() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            // Clear the table to show an empty view
+            activeReports.clear();
+            reportTable.setItems(FXCollections.observableArrayList());
+            System.out.println("Cannot refresh reports: Server is not running.");
+            clearAllFields();
+            return;
+        }
         loadActiveReports();
         reportTable.refresh();
-    }
-
-    /**
-     * Displays an alert dialog with the given title and content.
-     *
-     * @param title The title of the alert dialog
-     * @param content The content of the alert dialog
-     */
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
+        System.out.println("Reports refreshed successfully.");
     }
 
     /**
@@ -282,5 +290,24 @@ private void loadActiveReports() {
     public void setCurrentUser(String username) {
         this.currentUser = username;
         userLabel.setText("Logged in as: " + username);
+    }
+
+    /**
+     * Clears all input fields and resets checkboxes.
+     */
+    private void clearAllFields() {
+        // Clear text areas
+        reportDetailsArea.clear();
+        communicationLogArea.clear();
+        resourcesNeededArea.clear();
+
+        // Clear input fields
+        newLogEntryField.clear();
+
+        // Reset combo boxes
+        statusComboBox.getSelectionModel().clearSelection();
+
+        // Clear table selection
+        reportTable.getSelectionModel().clearSelection();
     }
 }

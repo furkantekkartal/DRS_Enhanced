@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
  *
  * @author 12223508
  */
-public class C_Geoscience {
+public class C_Geoscience extends BaseController {
 
     // FXML injected fields
     @FXML
@@ -131,18 +131,16 @@ public class C_Geoscience {
      * Loads active reports from the database.
      */
     private void loadActiveReports() {
-    try {
-        activeReports.clear();
-        activeReports.addAll(gis.getActiveReports());
-    } catch (SQLException e) {
-        activeReports.clear();
-        reportTable.setItems(FXCollections.observableArrayList());
-        System.err.println("Cannot load data: " + e.getMessage());
+        try {
+            activeReports.clear();
+            activeReports.addAll(gis.getActiveReports());
+        } catch (SQLException e) {
+            activeReports.clear();
+            reportTable.setItems(FXCollections.observableArrayList());
+            System.err.println("Cannot load data: " + e.getMessage());
+        }
     }
-}
-    
-    
-    
+
     /**
      * Updates the report details area with the selected report's information.
      *
@@ -239,6 +237,11 @@ public class C_Geoscience {
      */
     @FXML
     private void handleSave() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            System.out.println("Cannot save geoscience data: Server is not running.");
+            return;
+        }
         if (selectedReport == null) {
             showAlert("No Selection", "Please select a report to update geoscience data.");
             return;
@@ -276,6 +279,7 @@ public class C_Geoscience {
 
             // Update the report details in the UI
             updateReportDetails(selectedReport);
+            System.out.println("Geoscience data saved successfully.");
 
             showAlert("Success", "Geoscience data and report coordinates saved successfully for " + location);
         } catch (NumberFormatException e) {
@@ -304,7 +308,16 @@ public class C_Geoscience {
      */
     @FXML
     private void handleRefreshReports() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            activeReports.clear();
+            reportTable.setItems(FXCollections.observableArrayList());
+            System.out.println("Cannot refresh reports: Server is not running.");
+            clearAllFields();
+            return;
+        }
         loadActiveReports();
+        System.out.println("Reports refreshed successfully.");
     }
 
     /**
@@ -313,6 +326,11 @@ public class C_Geoscience {
      * @param report The selected report
      */
     private void updateCommunicationLog(Report report) {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            System.out.println("Cannot save geoscience data: Server is not running.");
+            return;
+        }
         communicationLogArea.setText(report.getCommunicationLog());
     }
 
@@ -321,6 +339,11 @@ public class C_Geoscience {
      */
     @FXML
     private void handleAddLogEntry() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            System.out.println("Cannot save geoscience data: Server is not running.");
+            return;
+        }
         if (selectedReport == null) {
             showAlert("Error", "Please select a report first.");
             return;
@@ -345,20 +368,6 @@ public class C_Geoscience {
     }
 
     /**
-     * Displays an alert dialog with the given title and content.
-     *
-     * @param title The title of the alert
-     * @param content The content of the alert
-     */
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-
-    /**
      * Sets the current user and updates the user label.
      *
      * @param username The username of the current user
@@ -367,4 +376,23 @@ public class C_Geoscience {
         this.currentUser = username;
         userLabel.setText("Logged in as: " + username);
     }
+
+    /**
+     * Clears all input fields.
+     */
+    private void clearAllFields() {
+        // Clear text areas
+        reportDetailsArea.clear();
+        longitudeField.clear();
+        communicationLogArea.clear();
+
+        latitudeField.clear();
+        longitudeField.clear();
+        magnitudeField.clear();
+        depthField.clear();
+        reportDetailsArea.clear();
+        communicationLogArea.clear();
+        newLogEntryField.clear();
+    }
+
 }

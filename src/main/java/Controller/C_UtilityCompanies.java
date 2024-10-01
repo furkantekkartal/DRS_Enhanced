@@ -21,7 +21,7 @@ import javafx.beans.property.SimpleStringProperty;
  *
  * @author 12223508
  */
-public class C_UtilityCompanies {
+public class C_UtilityCompanies extends BaseController {
 
     @FXML
     private TableView<Report> reportTable;
@@ -142,6 +142,11 @@ public class C_UtilityCompanies {
 
     @FXML
     private void handleSubmitStatus() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            System.out.println("Cannot submit status: Server is not running.");
+            return;
+        }
         if (selectedReport == null) {
             showAlert("Error", "Please select a report first.");
             return;
@@ -163,6 +168,7 @@ public class C_UtilityCompanies {
         utilityCompanies.updateStatus(selectedReport, selectedStatus);
         utilityCompanies.updateSubDepartmentStatus(selectedReport, selectedSubDept, selectedStatus);
         showAlert("Success", "Status updated successfully for " + selectedSubDept.getDisplayName() + ".");
+        System.out.println("Status submitted successfully for " + currentSubDepartment.getDisplayName() + ".");
         loadActiveReports();
         reportTable.refresh();
     }
@@ -223,16 +229,17 @@ public class C_UtilityCompanies {
 
     @FXML
     private void handleRefreshReports() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            activeReports.clear();
+            reportTable.setItems(FXCollections.observableArrayList());
+            clearAllFields();
+            System.out.println("Cannot refresh reports: Server is not running.");
+            return;
+        }
         loadActiveReports();
         reportTable.refresh();
-    }
-
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
+        System.out.println("Reports refreshed successfully.");
     }
 
     public void setCurrentUser(String username) {
@@ -267,5 +274,22 @@ public class C_UtilityCompanies {
         } else {
             return new SimpleStringProperty(cellData.getValue().getDepartmentStatus(Department.UTILITY_COMPANIES).getDisplayName());
         }
+    }
+
+    private void clearAllFields() {
+        // Clear text areas
+        reportDetailsArea.clear();
+        communicationLogArea.clear();
+        resourcesNeededArea.clear();
+
+        // Clear input fields
+        newLogEntryField.clear();
+
+        // Reset combo boxes
+        statusComboBox.getSelectionModel().clearSelection();
+        subDepartmentComboBox.getSelectionModel().clearSelection();
+
+        // Clear table selection
+        reportTable.getSelectionModel().clearSelection();
     }
 }
