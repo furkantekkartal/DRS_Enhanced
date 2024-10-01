@@ -40,15 +40,16 @@
 
         <HBox alignment="CENTER" />
     </VBox>
-   <HBox minHeight="10.0" minWidth="0.0" prefHeight="100.0" prefWidth="200.0" />
-      <Button onAction="#handleLogin" styleClass="button" text="Login" />
-   <Label text="or" />
+    <HBox minHeight="10.0" minWidth="0.0" prefHeight="100.0" prefWidth="200.0" />
+    <Button onAction="#handleLogin" styleClass="button" text="Login" />
+    <Label text="or" />
 
     <Button onAction="#handleReportDisaster" styleClass="button, report-btn" text="Report a Disaster" />
-   <HBox minHeight="10.0" minWidth="20.0" prefHeight="43.0" prefWidth="311.0" />
+    <HBox minHeight="10.0" minWidth="20.0" prefHeight="43.0" prefWidth="311.0" />
     
     <!-- New VBox for database setup and sample data loading with explanatory label -->
     <VBox alignment="BOTTOM_CENTER" spacing="10" styleClass="sample-data-container">
+        <Button onAction="#handleDRSServer" styleClass="button, sample-data-btn" text="DRS Server" />
         <Label styleClass="sample-data-label" text="* These buttons are for initilize purpose only" />
         <HBox alignment="BOTTOM_CENTER" prefWidth="311.0" spacing="10">
             <Button onAction="#handleDatabaseSetup" styleClass="button, sample-data-btn" text="Database Setup" />
