@@ -84,13 +84,18 @@
                     <RowConstraints />
                 </rowConstraints>
             </GridPane>
-             <CheckBox fx:id="aftershocksCheckBox" text="Aftershocks Expected" textAlignment="RIGHT" />
+         <HBox alignment="CENTER_RIGHT" prefHeight="39.0" prefWidth="360.0" spacing="10.0">
+            <children>
+                  <CheckBox fx:id="aftershocksCheckBox" prefHeight="17.0" prefWidth="246.0" text="Aftershocks Expected" textAlignment="RIGHT" />
+                   <Button onAction="#handleSave" text="Save" />
+                   <Button onAction="#handleReset" text="Reset" />
+            </children>
+         </HBox>
 
-            <HBox spacing="10">
+            <HBox alignment="BOTTOM_RIGHT" prefHeight="65.0" prefWidth="360.0" spacing="10">
+                <Button fx:id="createPdfButton" onAction="#handleCreatePdf" text="Create PDF" />
+                <Button onAction="#handleViewMap" text="View Map" />
                 <Button onAction="#handleRefreshReports" text="Refresh Reports" />
-                <Button text="View Map" onAction="#handleViewMap" />
-                <Button onAction="#handleSave" text="Save" />
-                <Button onAction="#handleReset" text="Reset" />
             </HBox>
         </VBox>
     </HBox>
