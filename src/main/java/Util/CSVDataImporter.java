@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * This class is responsible for importing CSV data into the database tables.
- * 
+ *
  * @author 12223508
  */
 public class CSVDataImporter {
@@ -48,10 +48,11 @@ public class CSVDataImporter {
      * @throws SQLException If there's an error executing SQL statements.
      */
     private static void importUserData() throws IOException, SQLException {
-        String csvFile = "src/main/resources/user_data.csv";
-        String sql = "INSERT INTO users (username, password, role) VALUES (?, ?, ?) "
-                + "ON DUPLICATE KEY UPDATE password = VALUES(password), role = VALUES(role)";
-        importData(csvFile, "users", sql, 3);
+        String csvFile = "src/main/resources/user_data2.csv";
+        String sql = "INSERT INTO users (username, password, role, email, full_name) VALUES (?, ?, ?, ?, ?) "
+                + "ON DUPLICATE KEY UPDATE password = VALUES(password), role = VALUES(role), "
+                + "email = VALUES(email), full_name = VALUES(full_name)";
+        importData(csvFile, "users", sql, 5); // Ожидается 5 столбцов
     }
 
     /**

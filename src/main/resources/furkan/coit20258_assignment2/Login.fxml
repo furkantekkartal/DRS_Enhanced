@@ -42,6 +42,7 @@
     </VBox>
     <HBox minHeight="10.0" minWidth="0.0" prefHeight="100.0" prefWidth="200.0" />
     <Button onAction="#handleLogin" styleClass="button" text="Login" />
+    <Button onAction="#handleRegister" styleClass="button" text="Register" />
     <Label text="or" />
 
     <Button onAction="#handleReportDisaster" styleClass="button, report-btn" text="Report a Disaster" />

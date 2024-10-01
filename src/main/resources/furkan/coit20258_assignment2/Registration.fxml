@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:controller="Controller.C_Registration"
+      xmlns:fx="http://javafx.com/fxml" spacing="10" alignment="CENTER">
+    <children>
+        <Label text="User Registration" style="-fx-font-size: 18px;"/>
+        <TextField fx:id="usernameField" promptText="Username"/>
+        <PasswordField fx:id="passwordField" promptText="Password"/>
+        <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password"/>
+        <TextField fx:id="emailField" promptText="Email"/>
+        <TextField fx:id="fullNameField" promptText="Full Name"/>
+        <ComboBox fx:id="roleComboBox" promptText="Select Role"/>
+        <HBox spacing="10" alignment="CENTER">
+            <children>
+                <Button fx:id="registerButton" text="Register" onAction="#handleRegister"/>
+                <Button fx:id="cancelButton" text="Cancel" onAction="#handleCancel"/>
+            </children>
+        </HBox>
+    </children>
+    <padding>
+        <Insets top="20" bottom="20" left="20" right="20"/>
+    </padding>
+</VBox>
