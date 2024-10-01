@@ -49,8 +49,9 @@
             </TableView>
             <HBox alignment="CENTER_RIGHT" spacing="10">
                 <children>
+                    <Button fx:id="createPdfButton" onAction="#handleCreatePdf" text="Create PDF" />
+                    <Button onAction="#handleViewMap" text="View Map" />
                     <Button alignment="TOP_LEFT" onAction="#handleRefreshReports" text="Refresh Reports" />
-                    <Button text="View Map" onAction="#handleViewMap" />
                 </children>
             </HBox>
         </VBox>
