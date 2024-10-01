@@ -15,7 +15,7 @@ import java.sql.SQLException;
 /**
  * Controller class for the Edit Report Window. Handles the editing and updating
  * of disaster reports.
- * 
+ *
  * @author 12223508
  */
 public class C_EditReportWindow {
@@ -185,9 +185,10 @@ public class C_EditReportWindow {
     @FXML
     private void onSaveChangesClicked() throws SQLException {
         Report updatedReport = editTable.getItems().get(0);
+        System.out.println("Updating report: " + updatedReport); // Log the report being updated
         updateReportInDatabase(updatedReport);
         mainController.refreshReports();
-        //editTable.getScene().getWindow().hide();
+        editTable.refresh(); // Refresh the table to show updated values
     }
 
     /**
@@ -197,7 +198,7 @@ public class C_EditReportWindow {
      */
     private void updateReportInDatabase(Report updatedReport) {
         try {
-            DatabaseConnection.updateReport(updatedReport);
+            DatabaseConnection.updateReportFromEditWindow(updatedReport);
             System.out.println("Report updated successfully");
             showAlert("Success", "Report updated successfully");
         } catch (SQLException e) {
