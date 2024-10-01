@@ -2,6 +2,7 @@ package Controller;
 
 import ENUM.*;
 import Model.*;
+import java.io.IOException;
 import java.sql.SQLException;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -13,6 +14,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 /**
  * Controller class for the Fire Department interface. Handles the interaction
@@ -309,5 +314,11 @@ public class C_Fire extends BaseController {
 
         // Clear table selection
         reportTable.getSelectionModel().clearSelection();
+    }
+
+    @FXML
+    private void handleViewMap() {
+        Report selectedReport = reportTable.getSelectionModel().getSelectedItem();
+        handleViewMap(selectedReport); // Calls the method in BaseController
     }
 }

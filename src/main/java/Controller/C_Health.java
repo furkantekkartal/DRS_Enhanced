@@ -297,4 +297,10 @@ public class C_Health extends BaseController {
         // Clear table selection
         reportTable.getSelectionModel().clearSelection();
     }
+
+    @FXML
+    private void handleViewMap() {
+        Report selectedReport = reportTable.getSelectionModel().getSelectedItem();
+        handleViewMap(selectedReport); // Calls the method in BaseController
+    }
 }

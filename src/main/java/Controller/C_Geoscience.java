@@ -395,4 +395,10 @@ public class C_Geoscience extends BaseController {
         newLogEntryField.clear();
     }
 
+    @FXML
+    private void handleViewMap() {
+        Report selectedReport = reportTable.getSelectionModel().getSelectedItem();
+        handleViewMap(selectedReport); // Calls the method in BaseController
+    }
+
 }
