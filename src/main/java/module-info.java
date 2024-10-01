@@ -9,8 +9,8 @@ module furkan.coit20258_assignment2 {
     exports Controller;
     opens Controller to javafx.fxml;
 
-    opens furkan.coit20258_assignment2 to javafx.fxml;
-    exports furkan.coit20258_assignment2;
+    opens coit20258assignment3 to javafx.fxml;
+    exports coit20258assignment3;
     
     opens Model to javafx.base;
 }

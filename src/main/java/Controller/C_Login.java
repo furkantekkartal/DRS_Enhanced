@@ -144,31 +144,31 @@ public class C_Login {
 
         switch (role) {
             case Coordinator:
-                fxmlFile = "/furkan/coit20258_assignment2/Coordinator.fxml";
+                fxmlFile = "/FXML/Coordinator.fxml";
                 title = "Disaster Response Center";
                 break;
             case FireDepartment:
-                fxmlFile = "/furkan/coit20258_assignment2/Fire.fxml";
+                fxmlFile = "/FXML/Fire.fxml";
                 title = "Fire Department";
                 break;
             case HealthDepartment:
-                fxmlFile = "/furkan/coit20258_assignment2/Health.fxml";
+                fxmlFile = "/FXML/Health.fxml";
                 title = "Health Department";
                 break;
             case LawEnforcement:
-                fxmlFile = "/furkan/coit20258_assignment2/LawEnforcement.fxml";
+                fxmlFile = "/FXML/LawEnforcement.fxml";
                 title = "Law Enforcement";
                 break;
             case Meteorology:
-                fxmlFile = "/furkan/coit20258_assignment2/Meteorology.fxml";
+                fxmlFile = "/FXML/Meteorology.fxml";
                 title = "Meteorology Department";
                 break;
             case Geoscience:
-                fxmlFile = "/furkan/coit20258_assignment2/Geoscience.fxml";
+                fxmlFile = "/FXML/Geoscience.fxml";
                 title = "Geoscience Department";
                 break;
             case UtilityCompanies:
-                fxmlFile = "/furkan/coit20258_assignment2/UtilityCompanies.fxml";
+                fxmlFile = "/FXML/UtilityCompanies.fxml";
                 title = "Utility Companies";
                 break;
             default:
@@ -222,7 +222,7 @@ public class C_Login {
     @FXML
     private void handleReportDisaster() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/furkan/coit20258_assignment2/report_disaster.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/report_disaster.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
             C_ReportDisaster controller = loader.getController();
@@ -269,7 +269,7 @@ public class C_Login {
     @FXML
     private void handleShowUsers() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/furkan/coit20258_assignment2/user_table.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/user_table.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
             stage.setTitle("User List");
@@ -334,7 +334,7 @@ public class C_Login {
      */
     private void openDRSServerInterface(String username) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/furkan/coit20258_assignment2/DRSServer.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/DRSServer.fxml"));
             Parent root = loader.load();
 
             C_DRSServer serverController = loader.getController();
@@ -353,7 +353,7 @@ public class C_Login {
     @FXML
     private void handleRegister() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/furkan/coit20258_assignment2/Registration.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Registration.fxml"));
             Parent root = loader.load();
 
             C_Registration controller = loader.getController();
