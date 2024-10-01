@@ -2,6 +2,7 @@ module furkan.coit20258_assignment2 {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.graphics;
+    requires javafx.web; 
     requires java.base;
     requires java.sql;
     exports Controller;  // Export the package containing your controllers
