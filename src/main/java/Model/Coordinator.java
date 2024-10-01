@@ -45,12 +45,9 @@ public class Coordinator {
      */
     public void loadReportsFromDatabase() {
         reports.clear();
-        try (Connection conn = DatabaseConnection.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT * FROM reports")) {
-
-            while (rs.next()) {
-                Report report = createReportFromResultSet(rs);
-                reports.add(report);
-            }
+        try {
+            List<Report> loadedReports = DatabaseConnection.getAllReports();
+            reports.addAll(loadedReports);
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Error loading reports from database: " + e.getMessage());
@@ -63,13 +60,9 @@ public class Coordinator {
      */
     public void loadDisasterStatusReports() {
         disasterStatusReports.clear();
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM reports WHERE response_status IN ('Pending', 'In Progress')")) {
-
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                Report report = createReportFromResultSet(rs);
-                disasterStatusReports.add(report);
-            }
+        try {
+            List<Report> loadedStatusReports = DatabaseConnection.getDisasterStatusReports();
+            disasterStatusReports.addAll(loadedStatusReports);
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Error loading disaster status reports: " + e.getMessage());
@@ -85,25 +78,11 @@ public class Coordinator {
      * statuses
      */
     public void updateDepartmentAssignments(Report report, Map<Department, ResponseStatus> assignments) {
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(
-                "UPDATE reports SET fire_department_status = ?, health_department_status = ?, "
-                + "law_enforcement_status = ?, meteorology_status = ?, geoscience_status = ?, "
-                + "utility_companies_status = ? WHERE id = ?")) {
-
-            pstmt.setString(1, getStatusString(assignments, Department.FIRE_DEPARTMENT));
-            pstmt.setString(2, getStatusString(assignments, Department.HEALTH_DEPARTMENT));
-            pstmt.setString(3, getStatusString(assignments, Department.LAW_ENFORCEMENT));
-            pstmt.setString(4, getStatusString(assignments, Department.METEOROLOGY));
-            pstmt.setString(5, getStatusString(assignments, Department.GEOSCIENCE));
-            pstmt.setString(6, getStatusString(assignments, Department.UTILITY_COMPANIES));
-            pstmt.setInt(7, report.getId());
-
-            int affectedRows = pstmt.executeUpdate();
-            if (affectedRows > 0) {
-                for (Map.Entry<Department, ResponseStatus> entry : assignments.entrySet()) {
-                    if (entry.getValue() != null) {
-                        report.setDepartmentStatus(entry.getKey(), entry.getValue());
-                    }
+        try {
+            DatabaseConnection.updateDepartmentAssignments(report.getId(), assignments);
+            for (Map.Entry<Department, ResponseStatus> entry : assignments.entrySet()) {
+                if (entry.getValue() != null) {
+                    report.setDepartmentStatus(entry.getKey(), entry.getValue());
                 }
             }
         } catch (SQLException e) {
@@ -112,27 +91,14 @@ public class Coordinator {
         }
     }
 
-    private String getStatusString(Map<Department, ResponseStatus> assignments, Department department) {
-        ResponseStatus status = assignments.get(department);
-        return status != null ? status.name() : ResponseStatus.NOT_RESPONSIBLE.name();
-    }
-
     /**
      * Updates a report's information in the database.
      *
      * @param report The report to update
      */
     public void updateReport(Report report) {
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(
-                "UPDATE reports SET response_status = ?, resources_needed = ?, communication_log = ?, priority_level = ? WHERE id = ?")) {
-
-            pstmt.setString(1, report.getResponseStatus());
-            pstmt.setString(2, report.getResourcesNeeded());
-            pstmt.setString(3, report.getCommunicationLog());
-            pstmt.setString(4, report.getPriorityLevel());
-            pstmt.setInt(5, report.getId());
-
-            pstmt.executeUpdate();
+        try {
+            DatabaseConnection.updateReport(report);
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Error updating report: " + e.getMessage());
@@ -150,16 +116,8 @@ public class Coordinator {
         String updatedLog = (currentLog == null || currentLog.isEmpty()) ? logEntry : currentLog + "\n" + logEntry;
         report.setCommunicationLog(updatedLog);
 
-        String sql = "UPDATE reports SET communication_log = ? WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, updatedLog);
-            pstmt.setInt(2, report.getId());
-            int affectedRows = pstmt.executeUpdate();
-            if (affectedRows > 0) {
-                System.out.println("Communication log updated successfully in the database.");
-            } else {
-                System.out.println("Failed to update communication log in the database.");
-            }
+        try {
+            DatabaseConnection.updateCommunicationLog(report.getId(), updatedLog);
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Error updating communication log: " + e.getMessage());
@@ -177,12 +135,8 @@ public class Coordinator {
         String updatedResources = (currentResources == null || currentResources.isEmpty()) ? resource : currentResources + "\n" + resource;
         report.setResourcesNeeded(updatedResources);
 
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement("UPDATE reports SET resources_needed = ? WHERE id = ?")) {
-
-            pstmt.setString(1, updatedResources);
-            pstmt.setInt(2, report.getId());
-
-            pstmt.executeUpdate();
+        try {
+            DatabaseConnection.updateResourcesNeeded(report.getId(), updatedResources);
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Error updating resources needed: " + e.getMessage());
@@ -201,13 +155,8 @@ public class Coordinator {
         report.setLatitude(latitude);
         report.setLongitude(longitude);
 
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement("UPDATE reports SET latitude = ?, longitude = ? WHERE id = ?")) {
-
-            pstmt.setDouble(1, latitude);
-            pstmt.setDouble(2, longitude);
-            pstmt.setInt(3, report.getId());
-
-            pstmt.executeUpdate();
+        try {
+            DatabaseConnection.updateCoordinates(report.getId(), latitude, longitude);
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Error updating coordinates: " + e.getMessage());
@@ -233,59 +182,6 @@ public class Coordinator {
      */
     public Meteorology getWeather(double latitude, double longitude) {
         return Meteorology.getWeather(latitude, longitude);
-    }
-
-    /**
-     * Creates a Report object from a ResultSet.
-     *
-     * @param rs The ResultSet containing report data
-     * @return A new Report object
-     * @throws SQLException if there's an error reading from the ResultSet
-     */
-    private Report createReportFromResultSet(ResultSet rs) throws SQLException {
-        Report report = new Report(
-                rs.getInt("id"),
-                rs.getString("disaster_type"),
-                rs.getString("location"),
-                rs.getDouble("latitude"),
-                rs.getDouble("longitude"),
-                rs.getString("date_time"),
-                rs.getString("reporter_name"),
-                rs.getString("contact_info"),
-                rs.getString("response_status")
-        );
-
-        report.setCreatedAt(rs.getString("created_at"));
-        report.setFireIntensity(rs.getString("fire_intensity"));
-        report.setAffectedAreaSize(rs.getString("affected_area_size"));
-        report.setNearbyInfrastructure(rs.getString("nearby_infrastructure"));
-        report.setWindSpeed(rs.getString("wind_speed"));
-        report.setFloodRisk(rs.getBoolean("flood_risk"));
-        report.setEvacuationStatus(rs.getString("evacuation_status"));
-        report.setMagnitude(rs.getString("magnitude"));
-        report.setDepth(rs.getString("depth"));
-        report.setAftershocksExpected(rs.getBoolean("aftershocks_expected"));
-        report.setWaterLevel(rs.getString("water_level"));
-        report.setFloodEvacuationStatus(rs.getString("flood_evacuation_status"));
-        report.setInfrastructureDamage(rs.getString("infrastructure_damage"));
-        report.setSlopeStability(rs.getString("slope_stability"));
-        report.setBlockedRoads(rs.getString("blocked_roads"));
-        report.setCasualtiesInjuries(rs.getString("casualties_injuries"));
-        report.setDisasterDescription(rs.getString("disaster_description"));
-        report.setEstimatedImpact(rs.getString("estimated_impact"));
-        report.setResourcesNeeded(rs.getString("resources_needed"));
-        report.setCommunicationLog(rs.getString("communication_log"));
-        report.setPriorityLevel(rs.getString("priority_level"));
-
-        for (Department dept : Department.values()) {
-            String statusString = rs.getString(dept.name().toLowerCase() + "_status");
-            ResponseStatus status = (statusString != null && !statusString.isEmpty())
-                    ? ResponseStatus.valueOf(statusString)
-                    : ResponseStatus.NOT_RESPONSIBLE;
-            report.setDepartmentStatus(dept, status);
-        }
-
-        return report;
     }
 
     /**

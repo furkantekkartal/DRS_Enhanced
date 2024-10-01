@@ -119,7 +119,7 @@ public class Health implements Actioner {
      *
      * @return A list of active reports for the Health Department.
      */
-    public List<Report> getActiveReports() {
+    public List<Report> getActiveReports() throws SQLException {
         List<Report> activeReports = new ArrayList<>();
         String sql = "SELECT * FROM reports WHERE response_status IN ('Pending', 'In Progress') "
                 + "AND (assigned_department LIKE '%Health Department%' OR health_department_status IS NOT NULL)";

@@ -4,6 +4,7 @@ import ENUM.Department;
 import ENUM.ResponseStatus;
 import Model.Report;
 import Model.UtilityCompanies;
+import java.sql.SQLException;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.collections.FXCollections;
@@ -122,14 +123,20 @@ public class C_UtilityCompanies {
     }
 
     private void loadActiveReports() {
-        activeReports.clear();
-        List<Report> allReports = utilityCompanies.getActiveReports();
+        try {
+            activeReports.clear();
+            List<Report> allReports = utilityCompanies.getActiveReports();
 
-        for (Report report : allReports) {
-            ResponseStatus utilityStatus = report.getDepartmentStatus(Department.UTILITY_COMPANIES);
-            if (utilityStatus != ResponseStatus.NOT_RESPONSIBLE) {
-                activeReports.add(report);
+            for (Report report : allReports) {
+                ResponseStatus utilityStatus = report.getDepartmentStatus(Department.UTILITY_COMPANIES);
+                if (utilityStatus != ResponseStatus.NOT_RESPONSIBLE) {
+                    activeReports.add(report);
+                }
             }
+        } catch (SQLException e) {
+            activeReports.clear();
+            reportTable.setItems(FXCollections.observableArrayList());
+            System.err.println("Cannot load data: " + e.getMessage());
         }
     }
 

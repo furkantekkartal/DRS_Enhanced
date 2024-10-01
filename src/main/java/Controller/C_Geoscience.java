@@ -2,6 +2,7 @@ package Controller;
 
 import Model.Report;
 import Model.Geoscience;
+import java.sql.SQLException;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.collections.FXCollections;
@@ -130,10 +131,18 @@ public class C_Geoscience {
      * Loads active reports from the database.
      */
     private void loadActiveReports() {
+    try {
         activeReports.clear();
         activeReports.addAll(gis.getActiveReports());
+    } catch (SQLException e) {
+        activeReports.clear();
+        reportTable.setItems(FXCollections.observableArrayList());
+        System.err.println("Cannot load data: " + e.getMessage());
     }
-
+}
+    
+    
+    
     /**
      * Updates the report details area with the selected report's information.
      *

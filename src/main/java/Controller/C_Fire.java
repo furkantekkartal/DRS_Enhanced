@@ -1,9 +1,8 @@
 package Controller;
 
-import ENUM.Department;
-import ENUM.ResponseStatus;
-import Model.Report;
-import Model.Fire;
+import ENUM.*;
+import Model.*;
+import java.sql.SQLException;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.collections.FXCollections;
@@ -11,10 +10,12 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.cell.PropertyValueFactory;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
- * Controller class for the Fire Department interface. Manages the interaction
+ * Controller class for the Fire Department interface. Handles the interaction
  * between the user interface and the Fire Department model.
  * 
  * @author 12223508
@@ -66,7 +67,7 @@ public class C_Fire {
      * FXML file has been loaded.
      */
     @FXML
-    public void initialize() {
+    public void initialize() throws SQLException {
         fireDepartment = new Fire();
 
         setupTableColumns();
@@ -126,7 +127,11 @@ public class C_Fire {
         reportTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 selectedReport = newSelection;
-                updateReportDetails(newSelection);
+                try {
+                    updateReportDetails(newSelection);
+                } catch (SQLException ex) {
+                    Logger.getLogger(C_Fire.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 updateCommunicationLog(newSelection);
                 updateResourcesNeeded(newSelection);
             }
@@ -136,10 +141,16 @@ public class C_Fire {
     /**
      * Loads active reports from the database and populates the table.
      */
-    private void loadActiveReports() {
+private void loadActiveReports() {
+    try {
         activeReports.clear();
         activeReports.addAll(fireDepartment.getActiveReports());
+    } catch (SQLException e) {
+        activeReports.clear();
+        reportTable.setItems(FXCollections.observableArrayList());
+        System.err.println("Cannot load data: " + e.getMessage());
     }
+}
 
     /**
      * Updates the report details area with information from the selected
@@ -147,7 +158,7 @@ public class C_Fire {
      *
      * @param report The selected report
      */
-    private void updateReportDetails(Report report) {
+    private void updateReportDetails(Report report) throws SQLException {
         StringBuilder details = new StringBuilder();
         details.append("Disaster Type: ").append(report.getDisasterType()).append("\n");
         details.append("Location: ").append(report.getLocation()).append("\n");
@@ -170,7 +181,7 @@ public class C_Fire {
      * @param details The StringBuilder to append to
      * @param report The report containing the disaster information
      */
-    private void appendDisasterSpecificDetails(StringBuilder details, Report report) {
+    private void appendDisasterSpecificDetails(StringBuilder details, Report report) throws SQLException {
         fireDepartment.appendDisasterSpecificDetails(details, report);
     }
 
@@ -178,7 +189,7 @@ public class C_Fire {
      * Handles the submission of a new status for the selected report.
      */
     @FXML
-    private void handleSubmitStatus() {
+    private void handleSubmitStatus() throws SQLException {
         if (selectedReport == null) {
             showAlert("Error", "Please select a report first.");
             return;
@@ -199,7 +210,7 @@ public class C_Fire {
      * Handles the addition of a new log entry to the communication log.
      */
     @FXML
-    private void handleAddLogEntry() {
+    private void handleAddLogEntry() throws SQLException {
         if (selectedReport == null) {
             showAlert("Error", "Please select a report first.");
             return;
@@ -219,7 +230,6 @@ public class C_Fire {
 
         fireDepartment.addCommunicationLogEntry(selectedReport, logEntry);
         updateCommunicationLog(selectedReport);
-
         newLogEntryField.clear();
     }
 
@@ -245,7 +255,7 @@ public class C_Fire {
      * Handles the refresh of the reports table.
      */
     @FXML
-    private void handleRefreshReports() {
+    private void handleRefreshReports() throws SQLException {
         loadActiveReports();
         reportTable.refresh();
     }

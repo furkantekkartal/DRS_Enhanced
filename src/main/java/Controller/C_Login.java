@@ -62,43 +62,48 @@ public class C_Login {
             return;
         }
 
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "SELECT * FROM users WHERE username = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, username);
+        String loginResult = DatabaseConnection.validateLogin(username, password, selectedRole.toString());
+        System.out.println("Login result: " + loginResult); // Debug print
 
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                String storedPassword = rs.getString("password");
-                String storedRole = rs.getString("role");
-
-                System.out.println("Stored role: " + storedRole);
-                System.out.println("Selected role: " + selectedRole);
-
-                if (!password.equals(storedPassword)) {
-                    showAlert(Alert.AlertType.ERROR, "Login Failed", "Incorrect password.");
-                    return;
-                }
+        switch (loginResult) {
+            case "LOGIN_SUCCESS":
+                String storedRole = DatabaseConnection.getUserRole(username);
+                System.out.println("Stored role: " + storedRole); // Debug print
+                System.out.println("Selected role: " + selectedRole); // Debug print
 
                 if (storedRole.equalsIgnoreCase("admin")) {
-                    // Admin can access any role
                     openDepartmentInterface(selectedRole, true, username);
                 } else if (storedRole.equalsIgnoreCase(selectedRole.toString())) {
-                    // User can access their assigned role
                     openDepartmentInterface(selectedRole, false, username);
                 } else if (storedRole.startsWith("Utility_")) {
-                    // Utility sub-department users are directed to UtilityCompanies interface
                     openDepartmentInterface(UserRole.UtilityCompanies, false, username, storedRole);
                 } else {
                     showAlert(Alert.AlertType.ERROR, "Access Denied", "You don't have access to the selected department.");
                 }
-            } else {
-                showAlert(Alert.AlertType.ERROR, "Login Failed", "Username does not exist.");
-            }
-        } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Database Error", "Error connecting to the database: " + e.getMessage());
+                break;
+            case "INCORRECT_PASSWORD":
+                showAlert(Alert.AlertType.ERROR, "Login Failed", "Incorrect password. Please try again.");
+                break;
+            case "USER_NOT_FOUND":
+                showAlert(Alert.AlertType.ERROR, "Login Failed", "Username not found. Please check your username.");
+                break;
+            case "ROLE_MISMATCH":
+                showAlert(Alert.AlertType.ERROR, "Login Failed", "The selected role doesn't match the user's assigned role.");
+                break;
+            default:
+                showAlert(Alert.AlertType.ERROR, "Database Error", "Error connecting to the database: " + loginResult);
+                break;
         }
+    }
+
+    /**
+     * Retrieves the user's role from the database.
+     *
+     * @param username The username of the user
+     * @return The user's role
+     */
+    private String getUserRole(String username) {
+        return DatabaseConnection.getUserRole(username);
     }
 
     /**
@@ -300,5 +305,37 @@ public class C_Login {
 
         // If no match found, return false
         return false;
+    }
+
+    /**
+     * Handles the DRS Server button click.
+     */
+    @FXML
+    private void handleDRSServer() {       
+        String username = usernameField.getText();
+        openDRSServerInterface(username);
+    }
+
+    /**
+     * Opens the DRS Server interface.
+     *
+     * @param username The username of the admin
+     */
+    private void openDRSServerInterface(String username) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/furkan/coit20258_assignment2/DRSServer.fxml"));
+            Parent root = loader.load();
+
+            C_DRSServer serverController = loader.getController();
+            serverController.setCurrentUser(username);
+
+            Stage stage = new Stage();
+            stage.setTitle("DRS Server Control Panel");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Error loading DRS Server interface: " + e.getMessage());
+        }
     }
 }

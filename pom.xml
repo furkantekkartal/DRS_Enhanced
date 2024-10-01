@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>Furkan</groupId>
-    <artifactId>DRS-Enhanced</artifactId>
+    <artifactId>DRS-Enhaced</artifactId>
     <version>1.0</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -103,5 +103,5 @@
             </plugin>
         </plugins>
     </build>
-    <name>DRS-Enhanced</name>
+    <name>DRS-Enhaced</name>
 </project>
