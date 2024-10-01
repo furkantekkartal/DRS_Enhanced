@@ -118,7 +118,7 @@ public class DatabaseConnection {
                 return "USER_NOT_FOUND";
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return "DATABASE_ERROR: " + e.getMessage();
         }
     }
