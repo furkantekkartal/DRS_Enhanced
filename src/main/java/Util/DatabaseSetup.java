@@ -6,7 +6,7 @@ import java.sql.*;
  * This class is responsible for setting up the database for the disaster
  * response system. It creates the necessary database and tables if they don't
  * exist.
- * 
+ *
  * @author 12223508
  */
 public class DatabaseSetup {
@@ -137,7 +137,9 @@ public class DatabaseSetup {
                 + "id INT AUTO_INCREMENT PRIMARY KEY,"
                 + "username VARCHAR(50) NOT NULL UNIQUE,"
                 + "password VARCHAR(50) NOT NULL,"
-                + "role VARCHAR(50) NOT NULL"
+                + "role VARCHAR(50) NOT NULL,"
+                + "email VARCHAR(100) NOT NULL UNIQUE,"
+                + "full_name VARCHAR(100) NOT NULL"
                 + ")";
         stmt.execute(createUsersTable);
         System.out.println("   users = OK");

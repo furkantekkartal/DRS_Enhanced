@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import ENUM.*;
 import Model.Report;
+import Model.User;
 import Server.DRSServer;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -35,15 +36,27 @@ public class DatabaseConnection {
         return PASS;
     }
 
+    public static String getServerHost() {
+        return SERVER_HOST;
+    }
+
+    public static int getServerPort() {
+        return SERVER_PORT;
+    }
+
+    public static int getTimeout() {
+        return TIMEOUT;
+    }
+
     // Database configuration constants
     private static final String DB_URL = "jdbc:mysql://localhost:3306/";
     private static final String DB_NAME = "disaster_response";
     private static final String USER = "root";
     private static final String PASS = "pass";
 
-    private static final String SERVER_HOST = "localhost";
-    private static final int SERVER_PORT = 5000; // Port your server listens on
-    private static final int TIMEOUT = 2000; // Timeout in milliseconds
+    public static final String SERVER_HOST = "localhost";
+    public static final int SERVER_PORT = 5000; // Port your server listens on
+    public static final int TIMEOUT = 2000; // Timeout in milliseconds
 
     private static DRSServer server;
 
@@ -492,6 +505,65 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             e.printStackTrace();
             return "DATABASE_ERROR";
+        }
+    }
+
+    /**
+     * Registers a new user in the database.
+     *
+     * @param user The User object containing user details.
+     * @return true if registration is successful, false otherwise.
+     */
+    public static boolean registerUser(User user) {
+        String sql = "INSERT INTO users (username, password, role, email, full_name) VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, user.getUsername());
+            pstmt.setString(2, user.getPassword()); // Password is not hashed
+            pstmt.setString(3, user.getRole());
+            pstmt.setString(4, user.getEmail());
+            pstmt.setString(5, user.getFullName());
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            // Handle duplicate username or email constraint
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Checks if a username already exists in the database.
+     *
+     * @param username The username to check.
+     * @return true if the username exists, false otherwise.
+     */
+    public static boolean usernameExists(String username) {
+        String sql = "SELECT id FROM users WHERE username = ?";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return true;
+        }
+    }
+
+    /**
+     * Checks if an email already exists in the database.
+     *
+     * @param email The email to check.
+     * @return true if the email exists, false otherwise.
+     */
+    public static boolean emailExists(String email) {
+        String sql = "SELECT id FROM users WHERE email = ?";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return true;
         }
     }
 }
