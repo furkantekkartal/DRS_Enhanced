@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" minHeight="700.0" prefHeight="600.0" prefWidth="400.0" spacing="20" styleClass="container" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.C_Login">
+<VBox alignment="CENTER" minHeight="700.0" prefHeight="718.0" prefWidth="400.0" spacing="20" styleClass="container" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.C_Login">
     
     <stylesheets>
         <URL value="@/styles/Login.css" />
@@ -40,9 +40,11 @@
 
         <HBox alignment="CENTER" />
     </VBox>
-    <HBox minHeight="10.0" minWidth="0.0" prefHeight="100.0" prefWidth="200.0" />
-    <Button onAction="#handleLogin" styleClass="button" text="Login" />
-    <Button onAction="#handleRegister" styleClass="button" text="Register" />
+    <HBox alignment="TOP_CENTER" minHeight="10.0" minWidth="0.0" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+      <children>
+          <Button maxWidth="110.0" minWidth="110.0" onAction="#handleLogin" prefWidth="110.0" styleClass="button" text="Login" textAlignment="CENTER" />
+          <Button maxWidth="110.0" minWidth="110.0" onAction="#handleRegister" prefWidth="110.0" styleClass="button" text="Register" />
+      </children></HBox>
     <Label text="or" />
 
     <Button onAction="#handleReportDisaster" styleClass="button, report-btn" text="Report a Disaster" />
