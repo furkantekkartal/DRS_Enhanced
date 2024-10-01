@@ -1,0 +1,13 @@
+username,password,role,email,full_name
+admin,admin,admin,admin@cqumail.com,Admin
+john.smith,pass,Coordinator,john.smith@cqumail.com,John Smith
+emma.jones,pass,FireDepartment,emma.jones@cqumail.com,Emma Jones
+michael.brown,pass,HealthDepartment,michael.brown@cqumail.com,Michael Brown
+sarah.davis,pass,LawEnforcement,sarah.davis@cqumail.com,Sarah Davis
+david.wilson,pass,Meteorology,david.wilson@cqumail.com,David Wilson
+lisa.taylor,pass,Geoscience,lisa.taylor@cqumail.com,Lisa Taylor
+robert.anderson,pass,UtilityCompanies,robert.anderson@cqumail.com,Robert Anderson
+james.martin,pass,Utility_Electricity,james.martin@cqumail.com,James Martin
+emily.thomas,pass,Utility_Water,emily.thomas@cqumail.com,Emily Thomas
+daniel.white,pass,Utility_Gas,daniel.white@cqumail.com,Daniel White
+olivia.clark,pass,Utility_Telecommunications,olivia.clark@cqumail.com,Olivia Clark
