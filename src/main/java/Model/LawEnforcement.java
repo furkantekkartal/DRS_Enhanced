@@ -117,7 +117,7 @@ public class LawEnforcement implements Actioner {
      *
      * @return A list of active reports for Law Enforcement.
      */
-    public List<Report> getActiveReports() {
+    public List<Report> getActiveReports() throws SQLException {
         List<Report> activeReports = new ArrayList<>();
         String sql = "SELECT * FROM reports WHERE response_status IN ('Pending', 'In Progress') "
                 + "AND (assigned_department LIKE '%Law Enforcement%' OR law_enforcement_status IS NOT NULL)";

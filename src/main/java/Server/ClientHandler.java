@@ -4,15 +4,15 @@ package Server;
 
 import java.io.*;
 import java.net.*;
-import Util.DatabaseManager;
+import Util.DatabaseConnection;
 
 public class ClientHandler implements Runnable {
     private Socket clientSocket;
-    private DatabaseManager dbManager;
+    private DatabaseConnection dbManager;
 
     public ClientHandler(Socket socket) {
         this.clientSocket = socket;
-        this.dbManager = new DatabaseManager();
+        this.dbManager = new DatabaseConnection();
     }
 
     @Override

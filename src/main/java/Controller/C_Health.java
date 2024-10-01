@@ -4,6 +4,7 @@ import ENUM.Department;
 import ENUM.ResponseStatus;
 import Model.Report;
 import Model.Health;
+import java.sql.SQLException;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.collections.FXCollections;
@@ -137,9 +138,15 @@ public class C_Health {
      * Loads active reports from the database and populates the table.
      */
     private void loadActiveReports() {
+    try {
         activeReports.clear();
         activeReports.addAll(healthDepartment.getActiveReports());
+    } catch (SQLException e) {
+        activeReports.clear();
+        reportTable.setItems(FXCollections.observableArrayList());
+        System.err.println("Cannot load data: " + e.getMessage());
     }
+}
 
     /**
      * Updates the report details area with information from the selected

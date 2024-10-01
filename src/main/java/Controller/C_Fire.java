@@ -141,10 +141,16 @@ public class C_Fire {
     /**
      * Loads active reports from the database and populates the table.
      */
-    private void loadActiveReports() throws SQLException {
+private void loadActiveReports() {
+    try {
         activeReports.clear();
         activeReports.addAll(fireDepartment.getActiveReports());
+    } catch (SQLException e) {
+        activeReports.clear();
+        reportTable.setItems(FXCollections.observableArrayList());
+        System.err.println("Cannot load data: " + e.getMessage());
     }
+}
 
     /**
      * Updates the report details area with information from the selected

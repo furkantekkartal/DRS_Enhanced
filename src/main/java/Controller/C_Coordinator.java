@@ -2,7 +2,9 @@ package Controller;
 
 import ENUM.*;
 import Model.*;
+import Util.DatabaseConnection;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javafx.collections.FXCollections;
@@ -16,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.util.Map;
 import java.util.EnumMap;
+import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.layout.Region;
 
@@ -122,7 +125,7 @@ public class C_Coordinator {
      * FXML file has been loaded.
      */
     @FXML
-    public void initialize() {
+    public void initialize() throws SQLException {
         model = new Coordinator();
         setupTableColumns();
         setupComboBoxes();
@@ -231,10 +234,20 @@ public class C_Coordinator {
     /**
      * Loads data from the model and updates the UI.
      */
-    private void loadDataFromModel() {
-        model.loadReportsFromDatabase();
+    private void loadDataFromModel() throws SQLException {
+        model.loadReportsFromDatabase(); // Show an alert to the user
         model.loadDisasterStatusReports();
         updateUI();
+    }
+
+    public void loadReportsFromDatabase() throws SQLException {
+        reports.clear();
+        try {
+            List<Report> loadedReports = DatabaseConnection.getAllReports();
+            reports.addAll(loadedReports);
+        } catch (SQLException e) {
+            throw e; // Propagate the exception to the controller
+        }
     }
 
     /**
@@ -251,7 +264,7 @@ public class C_Coordinator {
      * Refreshes the reports from the model.
      */
     @FXML
-    public void refreshReports() {
+    public void refreshReports() throws SQLException {
         loadDataFromModel();
         showAlert("Report", "Report page has been updated succesfully.");
     }

@@ -217,7 +217,7 @@ public class Meteorology {
      *
      * @return A list of active reports.
      */
-    public static List<Report> getActiveReports() {
+    public static List<Report> getActiveReports() throws SQLException {
         List<Report> activeReports = new ArrayList<>();
         String sql = "SELECT * FROM reports WHERE response_status IN ('Pending', 'In Progress', '')";
 

@@ -2,6 +2,7 @@ package Server;
 
 import java.io.*;
 import java.net.*;
+import java.sql.SQLException;
 import java.util.concurrent.*;
 
 public class DRSServer {
@@ -15,6 +16,11 @@ public class DRSServer {
     }
     private ExecutorService executor;
     private volatile boolean running;
+    
+    public static void main(String[] args) {
+        DRSServer newServer = new DRSServer();
+        newServer.start();
+    }
 
     public void start() {
         executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);

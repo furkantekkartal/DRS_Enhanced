@@ -183,7 +183,7 @@ public class C_EditReportWindow {
      * Handles the action when the Save Changes button is clicked.
      */
     @FXML
-    private void onSaveChangesClicked() {
+    private void onSaveChangesClicked() throws SQLException {
         Report updatedReport = editTable.getItems().get(0);
         updateReportInDatabase(updatedReport);
         mainController.refreshReports();

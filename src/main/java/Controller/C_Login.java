@@ -311,22 +311,9 @@ public class C_Login {
      * Handles the DRS Server button click.
      */
     @FXML
-    private void handleDRSServer() {
+    private void handleDRSServer() {       
         String username = usernameField.getText();
-        String password = passwordField.getText();
-
-        if (username.isEmpty() || password.isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Please enter username and password.");
-            return;
-        }
-
-        String loginResult = DatabaseConnection.validateLogin(username, password, "admin");
-
-        if (loginResult.equals("LOGIN_SUCCESS")) {
-            openDRSServerInterface(username);
-        } else {
-            showAlert(Alert.AlertType.ERROR, "Access Denied", "Only administrators can access the DRS Server.");
-        }
+        openDRSServerInterface(username);
     }
 
     /**

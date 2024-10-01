@@ -256,7 +256,14 @@ public class Geoscience {
      *
      * @return A list of active reports.
      */
-    public List<Report> getActiveReports() {
+    
+        /**
+     * Loads active reports from the database.
+     *
+     * @return A list of active reports for the Fire Department.
+     * @throws SQLException If there's an error querying the database.
+     */
+    public List<Report> getActiveReports() throws SQLException  {
         List<Report> activeReports = new ArrayList<>();
         String sql = "SELECT * FROM reports WHERE response_status IN ('Pending', 'In Progress')";
 
