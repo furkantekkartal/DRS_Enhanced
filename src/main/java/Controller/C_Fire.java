@@ -2,6 +2,7 @@ package Controller;
 
 import ENUM.*;
 import Model.*;
+import java.io.IOException;
 import java.sql.SQLException;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -13,6 +14,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 /**
  * Controller class for the Fire Department interface. Handles the interaction
@@ -55,6 +61,8 @@ public class C_Fire extends BaseController {
     private TextField newLogEntryField;
     @FXML
     private Label userLabel;
+    @FXML
+    private Button createPdfButton;
 
     // Class fields
     private String currentUser;
@@ -309,5 +317,21 @@ public class C_Fire extends BaseController {
 
         // Clear table selection
         reportTable.getSelectionModel().clearSelection();
+    }
+
+    @FXML
+    private void handleViewMap() {
+        Report selectedReport = reportTable.getSelectionModel().getSelectedItem();
+        handleViewMap(selectedReport); // Calls the method in BaseController
+    }
+
+    @FXML
+    private void handleCreatePdf(ActionEvent event) {
+        Report selectedReport = reportTable.getSelectionModel().getSelectedItem();
+        if (selectedReport != null) {
+            createPDF(selectedReport);
+        } else {
+            showAlert("No Selection", "Please select a report to create PDF.");
+        }
     }
 }

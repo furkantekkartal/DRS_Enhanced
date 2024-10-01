@@ -13,6 +13,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.event.ActionEvent;
 
 /**
  * Controller class for the Health Department interface. Manages the interaction
@@ -55,6 +56,9 @@ public class C_Health extends BaseController {
     private TextField newLogEntryField;
     @FXML
     private Label userLabel;
+
+    @FXML
+    private Button createPdfButton;
 
     // Class fields
     private String currentUser;
@@ -296,5 +300,21 @@ public class C_Health extends BaseController {
 
         // Clear table selection
         reportTable.getSelectionModel().clearSelection();
+    }
+
+    @FXML
+    private void handleViewMap() {
+        Report selectedReport = reportTable.getSelectionModel().getSelectedItem();
+        handleViewMap(selectedReport); // Calls the method in BaseController
+    }
+
+    @FXML
+    private void handleCreatePdf(ActionEvent event) {
+        Report selectedReport = reportTable.getSelectionModel().getSelectedItem();
+        if (selectedReport != null) {
+            createPDF(selectedReport);
+        } else {
+            showAlert("No Selection", "Please select a report to create PDF.");
+        }
     }
 }
