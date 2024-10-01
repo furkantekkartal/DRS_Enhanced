@@ -8,14 +8,13 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
-
 
 <VBox prefHeight="779.0" prefWidth="1150.0" spacing="10" style="-fx-background-color: white;" stylesheets="@/styles/Meteorology.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.C_Meteorology">
     <padding>
@@ -24,7 +23,7 @@
 
     <HBox alignment="CENTER_LEFT" spacing="10">
         <ImageView fitHeight="60" fitWidth="60" preserveRatio="true">
-            <Image url="@/logo.png"/>
+            <Image url="@/logo.png" />
         </ImageView>
         <VBox>
             <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Disaster Response System" />
@@ -38,7 +37,7 @@
     <HBox prefHeight="300.0" prefWidth="1060.0" spacing="20" VBox.vgrow="NEVER">
         <!-- Left side: Report Table -->
         <VBox spacing="10" HBox.hgrow="ALWAYS">
-            <TableView fx:id="reportTable" prefHeight="300.0" prefWidth="750.0" VBox.vgrow="ALWAYS">
+            <TableView fx:id="reportTable" prefHeight="295.0" prefWidth="790.0" VBox.vgrow="ALWAYS">
                 <columns>
                     <TableColumn fx:id="idColumn" text="ID" />
                     <TableColumn fx:id="typeColumn" text="Type" />
@@ -48,6 +47,13 @@
                     <TableColumn fx:id="dateTimeColumn" text="Date/Time" />
                 </columns>
             </TableView>
+         <HBox alignment="BOTTOM_RIGHT" prefHeight="35.0" prefWidth="790.0" spacing="10.0">
+            <children>
+                   <Button fx:id="createPdfButton" onAction="#handleCreatePdf" text="Create PDF" />
+                   <Button onAction="#handleViewMap" text="View Map" />
+                   <Button onAction="#handleRefreshReports" text="Refresh Reports" />
+            </children>
+         </HBox>
         </VBox>
 
         <!-- Right side: Weather Information -->
@@ -94,8 +100,7 @@
                 </rowConstraints>
             </GridPane>
 
-            <HBox spacing="10">
-                <Button onAction="#handleRefreshReports" text="Refresh Reports" />
+            <HBox alignment="CENTER_RIGHT" prefHeight="33.0" prefWidth="300.0" spacing="10">
                 <Button onAction="#handleSave" text="Save" />
                 <Button onAction="#handleReset" text="Reset" />
             </HBox>

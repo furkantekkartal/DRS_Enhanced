@@ -73,10 +73,12 @@
                                 <Label text="Priority Level:" />
                                 <ComboBox fx:id="priorityLevelComboBox" prefHeight="25.0" prefWidth="108.0" />
                             </VBox>
-                     <Button mnemonicParsing="false" onAction="#updateButton" prefHeight="25.0" prefWidth="100.0" text="Update" />
+                            <Button mnemonicParsing="false" onAction="#updateButton" prefHeight="25.0" prefWidth="100.0" text="Update" />
                         </HBox>
                     </HBox>
-                    <HBox alignment="CENTER_RIGHT" fillHeight="false" prefHeight="47.0" prefWidth="1322.0">
+                    <HBox alignment="CENTER_RIGHT" fillHeight="false" prefHeight="47.0" prefWidth="1322.0" spacing="10.0">
+                        <Button fx:id="createPdfButton" onAction="#handleCreatePdf" text="Create PDF" />
+                        <Button onAction="#handleViewMap" text="View Map" />
                         <Button alignment="TOP_LEFT" contentDisplay="RIGHT" maxWidth="140.0" minWidth="140.0" onAction="#refreshReports" prefWidth="140.0" text="Refresh Report Page" textAlignment="CENTER" />
                     </HBox>
                 </HBox>
@@ -133,7 +135,7 @@
                         <!-- Communication Log Section -->
                         <VBox spacing="5" VBox.vgrow="ALWAYS">
                             <Label style="-fx-font-weight: bold;" text="Communication Log:" />
-                            <TextArea fx:id="communicationLogArea" editable="false"  prefHeight="138.0" prefWidth="684.0" VBox.vgrow="ALWAYS" />
+                            <TextArea fx:id="communicationLogArea" editable="false" prefHeight="138.0" prefWidth="684.0" VBox.vgrow="ALWAYS" />
                             <HBox spacing="10">
                                 <TextField fx:id="newLogEntryField" promptText="Enter new log entry" HBox.hgrow="ALWAYS" />
                                 <Button onAction="#handleAddLogEntry" text="Add Log Entry" />
