@@ -49,7 +49,9 @@ public class Geoscience {
         depths = new ArrayList<>();
         aftershocksExpected = new ArrayList<>();
 
-        try (Connection conn = DatabaseConnection.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT location, latitude, longitude, magnitude, depth, aftershocks_expected FROM geoscience_data")) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT location, latitude, longitude, magnitude, depth, aftershocks_expected FROM geoscience_data")) {
 
             while (rs.next()) {
                 locations.add(rs.getString("location"));
@@ -181,7 +183,8 @@ public class Geoscience {
      */
     public GISData getData(double latitude, double longitude) {
         String sql = "SELECT * FROM geoscience_data WHERE latitude = ? AND longitude = ?";
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setDouble(1, latitude);
             pstmt.setDouble(2, longitude);
             ResultSet rs = pstmt.executeQuery();
@@ -213,7 +216,8 @@ public class Geoscience {
                 + "ON DUPLICATE KEY UPDATE "
                 + "magnitude = VALUES(magnitude), depth = VALUES(depth), "
                 + "aftershocks_expected = VALUES(aftershocks_expected)";
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, data.getLocation());
             pstmt.setDouble(2, data.getLatitude());
             pstmt.setDouble(3, data.getLongitude());
@@ -223,7 +227,7 @@ public class Geoscience {
 
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows > 0) {
-                //out.println("Geoscience data saved successfully. Affected rows: " + affectedRows);
+                System.out.println("Geoscience data saved successfully. Affected rows: " + affectedRows);
             } else {
                 System.out.println("No rows affected. Data might not have been saved.");
             }
@@ -260,7 +264,9 @@ public class Geoscience {
         List<Report> activeReports = new ArrayList<>();
         String sql = "SELECT * FROM reports WHERE response_status IN ('Pending', 'In Progress')";
 
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
                 Report report = new Report(
@@ -295,7 +301,8 @@ public class Geoscience {
     public void updateCoordinates(int reportId, double latitude, double longitude) {
         String sql = "UPDATE reports SET latitude = ?, longitude = ? WHERE id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setDouble(1, latitude);
             pstmt.setDouble(2, longitude);
@@ -327,7 +334,8 @@ public class Geoscience {
 
         String sql = "UPDATE reports SET communication_log = ? WHERE id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, updatedLog);
             pstmt.setInt(2, report.getId());
