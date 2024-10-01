@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
  *
  * @author 12223508
  */
-public class C_Meteorology {
+public class C_Meteorology extends BaseController {
 
     // FXML injected fields
     @FXML
@@ -138,15 +138,15 @@ public class C_Meteorology {
      * Loads active reports from the database.
      */
     private void loadActiveReports() {
-    try {
-        activeReports.clear();
-        activeReports.addAll(Meteorology.getActiveReports());
-    } catch (SQLException e) {
-        activeReports.clear();
-        reportTable.setItems(FXCollections.observableArrayList());
-        System.err.println("Cannot load data: " + e.getMessage());
+        try {
+            activeReports.clear();
+            activeReports.addAll(Meteorology.getActiveReports());
+        } catch (SQLException e) {
+            activeReports.clear();
+            reportTable.setItems(FXCollections.observableArrayList());
+            System.err.println("Cannot load data: " + e.getMessage());
+        }
     }
-}
 
     /**
      * Updates the report details area with the selected report's information.
@@ -216,6 +216,11 @@ public class C_Meteorology {
      */
     @FXML
     private void handleSave() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            System.out.println("Cannot save weather data: Server is not running.");
+            return;
+        }
         if (selectedReport == null) {
             showAlert("No Selection", "Please select a report to update weather data.");
             return;
@@ -236,6 +241,7 @@ public class C_Meteorology {
             Meteorology.setWeather(weather);
 
             showAlert("Success", "Weather data saved successfully.");
+            System.out.println("Weather data saved successfully.");
             fetchAndDisplayWeatherData(selectedReport); // Refresh the displayed data
         } catch (NumberFormatException e) {
             System.out.println("Error parsing input: " + e.getMessage());
@@ -259,7 +265,16 @@ public class C_Meteorology {
      */
     @FXML
     private void handleRefreshReports() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            activeReports.clear();
+            reportTable.setItems(FXCollections.observableArrayList());
+            clearAllFields();
+            System.out.println("Cannot refresh reports: Server is not running.");
+            return;
+        }
         loadActiveReports();
+        System.out.println("Reports refreshed successfully.");
     }
 
     /**
@@ -276,6 +291,11 @@ public class C_Meteorology {
      */
     @FXML
     private void handleAddLogEntry() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            System.out.println("Cannot save weather data: Server is not running.");
+            return;
+        }
         if (selectedReport == null) {
             showAlert("Error", "Please select a report first.");
             return;
@@ -295,22 +315,9 @@ public class C_Meteorology {
 
         Meteorology.addCommunicationLogEntry(selectedReport, logEntry);
         updateCommunicationLog(selectedReport);
+        System.out.println("Log added successfully.");
 
         newLogEntryField.clear();
-    }
-
-    /**
-     * Shows an alert dialog with the given title and content.
-     *
-     * @param title The title of the alert
-     * @param content The content of the alert
-     */
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
     }
 
     /**
@@ -321,5 +328,27 @@ public class C_Meteorology {
     public void setCurrentUser(String username) {
         this.currentUser = username;
         userLabel.setText("Logged in as: " + username);
+    }
+
+    private void clearAllFields() {
+        // Clear text areas
+        reportDetailsArea.clear();
+        communicationLogArea.clear();
+
+        // Clear input fields
+        newLogEntryField.clear();
+        locationField.clear();
+        latitudeField.clear();
+        longitudeField.clear();
+        temperatureField.clear();
+        humidityField.clear();
+        windSpeedField.clear();
+        windDirectionField.clear();
+
+        // Reset combo boxes
+        conditionsComboBox.getSelectionModel().clearSelection();
+
+        // Clear table selection
+        reportTable.getSelectionModel().clearSelection();
     }
 }

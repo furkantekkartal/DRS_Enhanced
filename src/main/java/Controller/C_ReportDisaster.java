@@ -22,7 +22,7 @@ import javafx.stage.Stage;
  *
  * @author 12223508
  */
-public class C_ReportDisaster {
+public class C_ReportDisaster extends BaseController {
 
     // FXML annotated fields
     @FXML
@@ -300,6 +300,11 @@ public class C_ReportDisaster {
      */
     @FXML
     private void handleSubmitReport() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            System.out.println("Cannot submit report: Server is not running.");
+            return;
+        }
         LocalDate date = datePicker.getValue();
 
         if (!validateMandatoryFields()) {
@@ -338,6 +343,7 @@ public class C_ReportDisaster {
 
         // Insert the report into the database
         insertReportIntoDatabase(columnValueMap);
+        System.out.println("Report submitted successfully.");
     }
 
     /**
@@ -442,20 +448,6 @@ public class C_ReportDisaster {
     }
 
     /**
-     * Shows an alert dialog with the given title and content.
-     *
-     * @param title The title of the alert dialog.
-     * @param content The content message of the alert dialog.
-     */
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-
-    /**
      * Clears all input fields.
      */
     private void clearFields() {
@@ -524,5 +516,17 @@ public class C_ReportDisaster {
                 // Handle unknown disaster type or throw an exception
                 throw new IllegalArgumentException("Unknown disaster type: " + disasterType);
         }
+    }
+
+    private void clearAllFields() {
+        // Clear common fields
+        locationField.clear();
+        datePicker.setValue(null);
+        reporterNameField.clear();
+        contactInfoField.clear();
+        disasterTypeComboBox.getSelectionModel().clearSelection();
+
+        // Clear specific fields container
+        specificFieldsContainer.getChildren().clear();
     }
 }

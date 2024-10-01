@@ -17,10 +17,10 @@ import javafx.beans.property.SimpleStringProperty;
 /**
  * Controller class for the Health Department interface. Manages the interaction
  * between the user interface and the Health Department model.
- * 
+ *
  * @author 12223508
  */
-public class C_Health {
+public class C_Health extends BaseController {
 
     // FXML annotated fields
     @FXML
@@ -138,15 +138,15 @@ public class C_Health {
      * Loads active reports from the database and populates the table.
      */
     private void loadActiveReports() {
-    try {
-        activeReports.clear();
-        activeReports.addAll(healthDepartment.getActiveReports());
-    } catch (SQLException e) {
-        activeReports.clear();
-        reportTable.setItems(FXCollections.observableArrayList());
-        System.err.println("Cannot load data: " + e.getMessage());
+        try {
+            activeReports.clear();
+            activeReports.addAll(healthDepartment.getActiveReports());
+        } catch (SQLException e) {
+            activeReports.clear();
+            reportTable.setItems(FXCollections.observableArrayList());
+            System.err.println("Cannot load data: " + e.getMessage());
+        }
     }
-}
 
     /**
      * Updates the report details area with information from the selected
@@ -186,6 +186,11 @@ public class C_Health {
      */
     @FXML
     private void handleSubmitStatus() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            System.out.println("Cannot submit status: Server is not running.");
+            return;
+        }
         if (selectedReport == null) {
             showAlert("Error", "Please select a report first.");
             return;
@@ -199,6 +204,7 @@ public class C_Health {
 
         healthDepartment.updateStatus(selectedReport, selectedStatus);
         showAlert("Success", "Status updated successfully.");
+        System.out.println("Status submitted successfully.");
         loadActiveReports(); // Refresh the table
     }
 
@@ -253,22 +259,17 @@ public class C_Health {
      */
     @FXML
     private void handleRefreshReports() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            activeReports.clear();
+            reportTable.setItems(FXCollections.observableArrayList());
+            clearAllFields();
+            System.out.println("Cannot refresh reports: Server is not running.");
+            return;
+        }
         loadActiveReports();
         reportTable.refresh();
-    }
-
-    /**
-     * Displays an alert dialog with the given title and content.
-     *
-     * @param title The title of the alert dialog
-     * @param content The content of the alert dialog
-     */
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
+        System.out.println("Reports refreshed successfully.");
     }
 
     /**
@@ -279,5 +280,21 @@ public class C_Health {
     public void setCurrentUser(String username) {
         this.currentUser = username;
         userLabel.setText("Logged in as: " + username);
+    }
+
+    private void clearAllFields() {
+        // Clear text areas
+        reportDetailsArea.clear();
+        communicationLogArea.clear();
+        resourcesNeededArea.clear();
+
+        // Clear input fields
+        newLogEntryField.clear();
+
+        // Reset combo boxes
+        statusComboBox.getSelectionModel().clearSelection();
+
+        // Clear table selection
+        reportTable.getSelectionModel().clearSelection();
     }
 }
