@@ -10,8 +10,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
@@ -198,60 +196,13 @@ public class C_EditReportWindow {
      * @param updatedReport The updated Report object
      */
     private void updateReportInDatabase(Report updatedReport) {
-        String sql = "UPDATE reports SET disaster_type = ?, location = ?, latitude = ?, longitude = ?, date_time = ?, "
-                + "reporter_name = ?, contact_info = ?, fire_intensity = ?, affected_area_size = ?, "
-                + "nearby_infrastructure = ?, wind_speed = ?, flood_risk = ?, evacuation_status = ?, "
-                + "magnitude = ?, depth = ?, aftershocks_expected = ?, water_level = ?, "
-                + "flood_evacuation_status = ?, infrastructure_damage = ?, slope_stability = ?, "
-                + "blocked_roads = ?, casualties_injuries = ?, disaster_description = ?, "
-                + "estimated_impact = ?, response_status = ?, assigned_department = ?, "
-                + "resources_needed = ?, communication_log = ?, priority_level = ? WHERE id = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            // Set all the parameters for the prepared statement
-            pstmt.setString(1, updatedReport.getDisasterType());
-            pstmt.setString(2, updatedReport.getLocation());
-            pstmt.setDouble(3, updatedReport.getLatitude());
-            pstmt.setDouble(4, updatedReport.getLongitude());
-            pstmt.setString(5, updatedReport.getDateTime());
-            pstmt.setString(6, updatedReport.getReporterName());
-            pstmt.setString(7, updatedReport.getContactInfo());
-            pstmt.setString(8, updatedReport.getFireIntensity());
-            pstmt.setString(9, updatedReport.getAffectedAreaSize());
-            pstmt.setString(10, updatedReport.getNearbyInfrastructure());
-            pstmt.setString(11, updatedReport.getWindSpeed());
-            pstmt.setBoolean(12, updatedReport.getFloodRisk());
-            pstmt.setString(13, updatedReport.getEvacuationStatus());
-            pstmt.setString(14, updatedReport.getMagnitude());
-            pstmt.setString(15, updatedReport.getDepth());
-            pstmt.setBoolean(16, updatedReport.getAftershocksExpected());
-            pstmt.setString(17, updatedReport.getWaterLevel());
-            pstmt.setString(18, updatedReport.getFloodEvacuationStatus());
-            pstmt.setString(19, updatedReport.getInfrastructureDamage());
-            pstmt.setString(20, updatedReport.getSlopeStability());
-            pstmt.setString(21, updatedReport.getBlockedRoads());
-            pstmt.setString(22, updatedReport.getCasualtiesInjuries());
-            pstmt.setString(23, updatedReport.getDisasterDescription());
-            pstmt.setString(24, updatedReport.getEstimatedImpact());
-            pstmt.setString(25, updatedReport.getResponseStatus());
-            pstmt.setString(26, updatedReport.getAssignedDepartment());
-            pstmt.setString(27, updatedReport.getResourcesNeeded());
-            pstmt.setString(28, updatedReport.getCommunicationLog());
-            pstmt.setString(29, updatedReport.getPriorityLevel());
-            pstmt.setInt(30, updatedReport.getId());
-
-            int affectedRows = pstmt.executeUpdate();
-            if (affectedRows > 0) {
-                System.out.println("Report updated successfully");
-                //showAlert("Success", "Report updated successfully");
-            } else {
-                System.out.println("No report was updated");
-                showAlert("Error", "Failed to update report");
-            }
+        try {
+            DatabaseConnection.updateReport(updatedReport);
+            System.out.println("Report updated successfully");
+            showAlert("Success", "Report updated successfully");
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert("Error", "Database error: " + e.getMessage());
+            showAlert("Error", "Failed to update report: " + e.getMessage());
         }
     }
 

@@ -15,12 +15,6 @@ import Model.Report;
  * @author 12223508
  */
 public class DatabaseConnection {
-    
-    // Database configuration constants
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/";
-    private static final String DB_NAME = "disaster_response";
-    private static final String USER = "root";
-    private static final String PASS = "pass";
 
     public static String getDB_URL() {
         return DB_URL;
@@ -37,6 +31,12 @@ public class DatabaseConnection {
     public static String getPASS() {
         return PASS;
     }
+    
+    // Database configuration constants
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/";
+    private static final String DB_NAME = "disaster_response";
+    private static final String USER = "root";
+    private static final String PASS = "pass";
 
     /**
      * Private constructor to prevent instantiation of this utility class.
@@ -241,6 +241,64 @@ public class DatabaseConnection {
             pstmt.setInt(3, reportId);
             pstmt.executeUpdate();
         }
+    }
+
+    /**
+     * Updates the status of a specific department for a report.
+     * @param reportId The ID of the report to update.
+     * @param department The department whose status is being updated.
+     * @param status The new status for the department.
+     * @throws SQLException If a database access error occurs.
+     */
+    public static void updateDepartmentStatus(int reportId, Department department, ResponseStatus status) throws SQLException {
+        String columnName = department.name().toLowerCase() + "_status";
+        String sql = "UPDATE reports SET " + columnName + " = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, status.name());
+            pstmt.setInt(2, reportId);
+            pstmt.executeUpdate();
+        }
+    }
+
+    /**
+     * Retrieves active reports for a specific department.
+     * @param department The department to get reports for.
+     * @return A list of active reports for the specified department.
+     * @throws SQLException If a database access error occurs.
+     */
+    public static List<Report> getActiveReportsForDepartment(Department department) throws SQLException {
+        List<Report> reports = new ArrayList<>();
+        String columnName = department.name().toLowerCase() + "_status";
+        String sql = "SELECT * FROM reports WHERE response_status IN ('Pending', 'In Progress') "
+                   + "AND " + columnName + " IS NOT NULL AND " + columnName + " != 'NOT_RESPONSIBLE'";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                reports.add(createReportFromResultSet(rs));
+            }
+        }
+        return reports;
+    }
+
+    /**
+     * Retrieves a specific report by its ID.
+     * @param reportId The ID of the report to retrieve.
+     * @return The Report object, or null if not found.
+     * @throws SQLException If a database access error occurs.
+     */
+    public static Report getReportById(int reportId) throws SQLException {
+        String sql = "SELECT * FROM reports WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, reportId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return createReportFromResultSet(rs);
+            }
+        }
+        return null;
     }
 
     /**
