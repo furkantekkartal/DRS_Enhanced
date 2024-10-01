@@ -28,7 +28,7 @@ import javafx.scene.layout.Region;
  *
  * @author 12223508
  */
-public class C_Coordinator {
+public class C_Coordinator extends BaseController {
 
     // FXML Annotations and UI Components
     @FXML
@@ -234,10 +234,14 @@ public class C_Coordinator {
     /**
      * Loads data from the model and updates the UI.
      */
-    private void loadDataFromModel() throws SQLException {
-        model.loadReportsFromDatabase(); // Show an alert to the user
-        model.loadDisasterStatusReports();
-        updateUI();
+    private void loadDataFromModel() {
+        try {
+            model.loadReportsFromDatabase();
+            model.loadDisasterStatusReports();
+            updateUI();
+        } catch (Exception e) {
+            showAlert("Error", "Failed to load data: " + e.getMessage());
+        }
     }
 
     public void loadReportsFromDatabase() throws SQLException {
@@ -265,8 +269,15 @@ public class C_Coordinator {
      */
     @FXML
     public void refreshReports() throws SQLException {
+        if (!isServerRunning()) {
+            loadDataFromModel();
+            showAlert("Server Connection Error", "Server connection is not established.");
+            clearAllFields();  // Add this line to clear all fields
+            return;
+        }
         loadDataFromModel();
         showAlert("Report", "Report page has been updated succesfully.");
+        System.out.println("Report page has been updated succesfully.");
     }
 
     /**
@@ -274,8 +285,12 @@ public class C_Coordinator {
      */
     @FXML
     private void refreshDisasterStatus() {
-        model.loadDisasterStatusReports();
-        updateUI();
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            model.loadDisasterStatusReports();
+            updateUI();
+            return;
+        }
     }
 
     /**
@@ -375,6 +390,10 @@ public class C_Coordinator {
      * @param report The report to be edited
      */
     private void openEditReportWindow(Report report) {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/furkan/coit20258_assignment2/edit_report_window.fxml"));
             Parent root = loader.load();
@@ -397,6 +416,10 @@ public class C_Coordinator {
      */
     @FXML
     private void handleAssignDepartments() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            return;
+        }
         Report selectedReport = reportTableView.getSelectionModel().getSelectedItem();
         if (selectedReport == null) {
             showAlert("Error", "No report selected. Please select a report to assign departments.");
@@ -436,12 +459,17 @@ public class C_Coordinator {
      * @param assignments The map of department assignments
      */
     private void showAssignmentAlert(Map<Department, ResponseStatus> assignments) {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            return;
+        }
         StringBuilder assignedDepartments = new StringBuilder("Assigned Departments:\n");
         boolean anyAssigned = false;
         for (Map.Entry<Department, ResponseStatus> entry : assignments.entrySet()) {
             if (entry.getValue() == ResponseStatus.NOT_RESPONDED_YET) {
                 assignedDepartments.append("- ").append(entry.getKey().toString()).append("\n");
                 anyAssigned = true;
+                System.out.println("Department assigned succesfully.");
             }
         }
 
@@ -457,6 +485,10 @@ public class C_Coordinator {
      */
     @FXML
     private void handleAddLogEntry() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            return;
+        }
         Report selectedReport = reportTableView.getSelectionModel().getSelectedItem();
         if (selectedReport == null) {
             showAlert("Error", "No report selected. Please select a report to add a log entry.");
@@ -470,6 +502,7 @@ public class C_Coordinator {
         }
 
         addCommunicationLog(newEntry);
+        System.out.println("Log added succesfully.");
         newLogEntryField.clear();
     }
 
@@ -479,6 +512,10 @@ public class C_Coordinator {
      * @param log The log entry to add
      */
     public void addCommunicationLog(String log) {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            return;
+        }
         Report selectedReport = reportTableView.getSelectionModel().getSelectedItem();
         if (selectedReport == null) {
             showAlert("Error", "No report selected. Please select a report to add a log.");
@@ -504,6 +541,10 @@ public class C_Coordinator {
      */
     @FXML
     private void openAddResourceWindow() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/furkan/coit20258_assignment2/add_resource_window.fxml"));
             Parent root = loader.load();
@@ -527,6 +568,10 @@ public class C_Coordinator {
      * @param resource The resource to add
      */
     public void addResourceNeeded(String resource) {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            return;
+        }
         Report selectedReport = reportTableView.getSelectionModel().getSelectedItem();
         if (selectedReport == null) {
             showAlert("Error", "No report selected. Please select a report to add a resource.");
@@ -535,6 +580,7 @@ public class C_Coordinator {
 
         model.addResourceNeeded(selectedReport, resource);
         resourcesNeededArea.setText(selectedReport.getResourcesNeeded());
+        System.out.println("Needed resource added succesfully.");
         updateUI();
     }
 
@@ -553,6 +599,10 @@ public class C_Coordinator {
      * Gets coordinates for the selected report.
      */
     private void getCoordinatesForReport() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            return;
+        }
         Report selectedReport = reportTableView.getSelectionModel().getSelectedItem();
         if (selectedReport == null) {
             showAlert("Error", "No report selected. Please select a report to get coordinates.");
@@ -577,6 +627,7 @@ public class C_Coordinator {
             detailsTextArea.setText(updatedDetails);
 
             showAlert("Success", "Coordinates updated successfully for " + location);
+            System.out.println("Coordinates updated succesfully.");
         } else {
             showAlert("Not Found", "Coordinates for the location '" + location + "' were not found.");
         }
@@ -586,6 +637,10 @@ public class C_Coordinator {
      * Shows weather information for the selected report.
      */
     private void showWeatherInfo() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            return;
+        }
         Report selectedReport = reportTableView.getSelectionModel().getSelectedItem();
         if (selectedReport == null) {
             showAlert("No Selection", "Please select a report to view weather information.");
@@ -607,31 +662,23 @@ public class C_Coordinator {
         }
 
         showAlert("Weather Information", weather.toString());
-    }
-
-    /**
-     * Shows an alert dialog with the given title and content.
-     *
-     * @param title The title of the alert
-     * @param content The content of the alert
-     */
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-        alert.showAndWait();
+        System.out.println("Weather information showed succesfully.");
     }
 
     @FXML
     private void handleWeatherImpactButton() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            return;
+        }
         Report selectedReport = reportTableView.getSelectionModel().getSelectedItem();
         if (selectedReport != null) {
             Meteorology.WeatherImpact weatherImpact = model.analyzeWeatherImpact(selectedReport);
             if (weatherImpact != null) {
                 weatherImpactField.setText(weatherImpact.getRiskLevel());
                 showAlert("Weather Impact Analysis", weatherImpact.toString());
+                System.out.println("Weather impact calculated succesfully.");
+
             } else {
                 showAlert("Weather Impact Analysis", "Unable to analyze weather impact for this report.");
             }
@@ -642,12 +689,17 @@ public class C_Coordinator {
 
     @FXML
     private void handlePrioritySuggestionButton() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            return;
+        }
         Report selectedReport = reportTableView.getSelectionModel().getSelectedItem();
         if (selectedReport != null) {
             String result = model.calculatePriority(selectedReport);
             String[] parts = result.split("\\|", 2); // Split only on the first "|"
             calculatedPriorityField.setText(parts[0]);
             showAlert("Priority Calculation Process", parts[1]);
+            System.out.println("Priority calculated succesfully.");
         } else {
             showAlert("Error", "No report selected. Please select a report to show calculated priority.");
         }
@@ -655,6 +707,10 @@ public class C_Coordinator {
 
     @FXML
     public void updateButton() {
+        if (!isServerRunning()) {
+            showAlert("Server Connection Error", "Server connection is not established.");
+            return;
+        }
         Report selectedReport = reportTableView.getSelectionModel().getSelectedItem();
         if (selectedReport == null) {
             showAlert("Error", "No report selected. Please select a report to update.");
@@ -671,5 +727,34 @@ public class C_Coordinator {
 
         model.updateReport(selectedReport);
         updateUI();
+    }
+
+    /**
+     * Clears all input fields and resets checkboxes.
+     */
+    private void clearAllFields() {
+        // Clear text areas
+        detailsTextArea.clear();
+        resourcesNeededArea.clear();
+        communicationLogArea.clear();
+
+        // Reset combo boxes
+        responseStatusComboBox.getSelectionModel().clearSelection();
+        priorityLevelComboBox.getSelectionModel().clearSelection();
+
+        // Clear text fields
+        newLogEntryField.clear();
+        weatherImpactField.clear();
+        calculatedPriorityField.clear();
+
+        // Uncheck all checkboxes
+        fireDeptCheckBox.setSelected(false);
+        healthDeptCheckBox.setSelected(false);
+        lawEnforcementCheckBox.setSelected(false);
+        utilityCompanyCheckBox.setSelected(false);
+
+        // Clear table selections
+        reportTableView.getSelectionModel().clearSelection();
+        disasterStatusTableView.getSelectionModel().clearSelection();
     }
 }

@@ -67,19 +67,7 @@ public class C_Login {
 
         switch (loginResult) {
             case "LOGIN_SUCCESS":
-                String storedRole = DatabaseConnection.getUserRole(username);
-                System.out.println("Stored role: " + storedRole); // Debug print
-                System.out.println("Selected role: " + selectedRole); // Debug print
-
-                if (storedRole.equalsIgnoreCase("admin")) {
-                    openDepartmentInterface(selectedRole, true, username);
-                } else if (storedRole.equalsIgnoreCase(selectedRole.toString())) {
-                    openDepartmentInterface(selectedRole, false, username);
-                } else if (storedRole.startsWith("Utility_")) {
-                    openDepartmentInterface(UserRole.UtilityCompanies, false, username, storedRole);
-                } else {
-                    showAlert(Alert.AlertType.ERROR, "Access Denied", "You don't have access to the selected department.");
-                }
+                handleSuccessfulLogin(username, selectedRole);
                 break;
             case "INCORRECT_PASSWORD":
                 showAlert(Alert.AlertType.ERROR, "Login Failed", "Incorrect password. Please try again.");
@@ -90,9 +78,32 @@ public class C_Login {
             case "ROLE_MISMATCH":
                 showAlert(Alert.AlertType.ERROR, "Login Failed", "The selected role doesn't match the user's assigned role.");
                 break;
-            default:
-                showAlert(Alert.AlertType.ERROR, "Database Error", "Error connecting to the database: " + loginResult);
+            case "SERVER_NOT_RUNNING":
+                showAlert(Alert.AlertType.ERROR, "Server Error", "The server is not running. Please start the server and try again.");
                 break;
+            default:
+                if (loginResult.startsWith("DATABASE_ERROR")) {
+                    showAlert(Alert.AlertType.ERROR, "Database Error", loginResult.substring("DATABASE_ERROR: ".length()));
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Login Failed", "An unexpected error occurred. Please try again later.");
+                }
+                break;
+        }
+    }
+
+    private void handleSuccessfulLogin(String username, UserRole selectedRole) {
+        String storedRole = DatabaseConnection.getUserRole(username);
+        System.out.println("Stored role: " + storedRole); // Debug print
+        System.out.println("Selected role: " + selectedRole); // Debug print
+
+        if (storedRole.equalsIgnoreCase("admin")) {
+            openDepartmentInterface(selectedRole, true, username);
+        } else if (storedRole.equalsIgnoreCase(selectedRole.toString())) {
+            openDepartmentInterface(selectedRole, false, username);
+        } else if (storedRole.startsWith("Utility_")) {
+            openDepartmentInterface(UserRole.UtilityCompanies, false, username, storedRole);
+        } else {
+            showAlert(Alert.AlertType.ERROR, "Access Denied", "You don't have access to the selected department.");
         }
     }
 
@@ -311,7 +322,7 @@ public class C_Login {
      * Handles the DRS Server button click.
      */
     @FXML
-    private void handleDRSServer() {       
+    private void handleDRSServer() {
         String username = usernameField.getText();
         openDRSServerInterface(username);
     }
