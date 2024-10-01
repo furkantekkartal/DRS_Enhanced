@@ -349,4 +349,23 @@ public class C_Login {
             showAlert(Alert.AlertType.ERROR, "Error", "Error loading DRS Server interface: " + e.getMessage());
         }
     }
+
+    @FXML
+    private void handleRegister() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/furkan/coit20258_assignment2/Registration.fxml"));
+            Parent root = loader.load();
+
+            C_Registration controller = loader.getController();
+            Stage stage = new Stage();
+            controller.setStage(stage);
+
+            stage.setTitle("User Registration");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Error loading registration interface: " + e.getMessage());
+        }
+    }
 }
