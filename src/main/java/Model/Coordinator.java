@@ -29,28 +29,17 @@ public class Coordinator {
         disasterStatusReports = new ArrayList<>();
         departments = new HashMap<>();
         gisService = new Geoscience(null); // Initialize with appropriate DisasterType if needed
-        initializeDepartments();
-    }
-
-    /**
-     * Initializes the departments map with available services.
-     */
-    private void initializeDepartments() {
-        departments.put("GIS", gisService);
-        // Add other departments as needed
     }
 
     /**
      * Loads all reports from the database into the reports list.
      */
     public void loadReportsFromDatabase() {
-        reports.clear();
         try {
-            List<Report> loadedReports = DatabaseConnection.getAllReports();
-            reports.addAll(loadedReports);
+            reports.clear();
+            reports.addAll(DatabaseConnection.getAllReports());
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Error loading reports from database: " + e.getMessage());
+            System.out.println("Error loading reports: " + e.getMessage());
         }
     }
 
@@ -59,12 +48,10 @@ public class Coordinator {
      * the database.
      */
     public void loadDisasterStatusReports() {
-        disasterStatusReports.clear();
         try {
-            List<Report> loadedStatusReports = DatabaseConnection.getDisasterStatusReports();
-            disasterStatusReports.addAll(loadedStatusReports);
+            disasterStatusReports.clear();
+            disasterStatusReports.addAll(DatabaseConnection.getDisasterStatusReports());
         } catch (SQLException e) {
-            e.printStackTrace();
             System.out.println("Error loading disaster status reports: " + e.getMessage());
         }
     }
