@@ -21,6 +21,7 @@ import java.util.EnumMap;
 import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.layout.Region;
+import javafx.event.ActionEvent;
 
 /**
  * Controller class for the Coordinator view. Manages the interaction between
@@ -113,6 +114,8 @@ public class C_Coordinator extends BaseController {
     private TextField weatherImpactField;
     @FXML
     private TextField calculatedPriorityField;
+    @FXML
+    private Button createPdfButton;
 
     // Class variables
     private String currentUser;
@@ -757,4 +760,21 @@ public class C_Coordinator extends BaseController {
         reportTableView.getSelectionModel().clearSelection();
         disasterStatusTableView.getSelectionModel().clearSelection();
     }
+
+    @FXML
+    private void handleViewMap() {
+        Report selectedReport = reportTableView.getSelectionModel().getSelectedItem();
+        handleViewMap(selectedReport); // Calls the method in BaseController
+    }
+
+    @FXML
+    private void handleCreatePdf(ActionEvent event) {
+        Report selectedReport = reportTableView.getSelectionModel().getSelectedItem();
+        if (selectedReport != null) {
+            createPDF(selectedReport);
+        } else {
+            showAlert("No Selection", "Please select a report to create PDF.");
+        }
+    }
+
 }
