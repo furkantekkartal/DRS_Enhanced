@@ -43,6 +43,16 @@
             <version>5.6.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>22</version>  <!-- Use the same version as your other JavaFX dependencies -->
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.24</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -60,6 +70,12 @@
                 <version>0.0.4</version>
                 <configuration>
                     <mainClass>furkan.coit20258_assignment2.App</mainClass>
+                    <options>
+                        <option>--module-path</option>
+                        <option>${project.build.directory}/lib</option>
+                        <option>--add-modules</option>
+                        <option>javafx.controls,javafx.fxml,javafx.web</option> <!-- Add javafx.web -->
+                    </options>
                 </configuration>
                 <executions>
                     <execution>
