@@ -136,8 +136,7 @@ public class Meteorology {
      */
     public static Meteorology getWeather(double latitude, double longitude) {
         String sql = "SELECT * FROM meteorology_data WHERE ABS(latitude - ?) < 0.01 AND ABS(longitude - ?) < 0.01 ORDER BY (POW(latitude - ?, 2) + POW(longitude - ?, 2)) ASC LIMIT 1";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setDouble(1, latitude);
             pstmt.setDouble(2, longitude);
             pstmt.setDouble(3, latitude);
@@ -154,6 +153,7 @@ public class Meteorology {
                         rs.getDouble("wind_speed"),
                         rs.getString("wind_direction")
                 );
+                //System.out.println("Found weather data: " + weather);
                 return weather;
             }
         } catch (SQLException e) {
@@ -175,8 +175,7 @@ public class Meteorology {
                 + "temperature = VALUES(temperature), humidity = VALUES(humidity), "
                 + "conditions = VALUES(conditions), wind_speed = VALUES(wind_speed), "
                 + "wind_direction = VALUES(wind_direction)";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setDouble(1, weather.getLatitude());
             pstmt.setDouble(2, weather.getLongitude());
             pstmt.setString(3, weather.getLocation());
@@ -200,8 +199,7 @@ public class Meteorology {
      */
     public static boolean hasWeather(double latitude, double longitude) {
         String sql = "SELECT COUNT(*) FROM meteorology_data WHERE latitude = ? AND longitude = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setDouble(1, latitude);
             pstmt.setDouble(2, longitude);
             ResultSet rs = pstmt.executeQuery();
@@ -223,9 +221,7 @@ public class Meteorology {
         List<Report> activeReports = new ArrayList<>();
         String sql = "SELECT * FROM reports WHERE response_status IN ('Pending', 'In Progress', '')";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
                 Report report = new Report(
@@ -259,8 +255,7 @@ public class Meteorology {
     public static void updateCoordinates(int reportId, double latitude, double longitude) {
         String sql = "UPDATE reports SET latitude = ?, longitude = ? WHERE id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setDouble(1, latitude);
             pstmt.setDouble(2, longitude);
@@ -292,8 +287,7 @@ public class Meteorology {
 
         String sql = "UPDATE reports SET communication_log = ? WHERE id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, updatedLog);
             pstmt.setInt(2, report.getId());

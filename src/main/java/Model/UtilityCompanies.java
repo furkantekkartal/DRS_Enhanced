@@ -119,8 +119,7 @@ public class UtilityCompanies implements Actioner {
     private void updateStatusInDatabase(int reportId, Department dept, ResponseStatus status) {
         String columnName = dept.name().toLowerCase() + "_status";
         String sql = "UPDATE reports SET " + columnName + " = ? WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, status.name());
             pstmt.setInt(2, reportId);
             pstmt.executeUpdate();
@@ -137,8 +136,7 @@ public class UtilityCompanies implements Actioner {
      */
     private void updateCommunicationLogInDatabase(int reportId, String log) {
         String sql = "UPDATE reports SET communication_log = ? WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, log);
             pstmt.setInt(2, reportId);
             pstmt.executeUpdate();
@@ -184,9 +182,7 @@ public class UtilityCompanies implements Actioner {
         String sql = "SELECT * FROM reports WHERE response_status IN ('Pending', 'In Progress') "
                 + "AND (assigned_department LIKE '%Utility Companies%' OR utility_companies_status IS NOT NULL)";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
                 Report report = createReportFromResultSet(rs);

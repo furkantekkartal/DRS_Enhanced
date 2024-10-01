@@ -86,8 +86,7 @@ public class LawEnforcement implements Actioner {
      */
     private void updateStatusInDatabase(int reportId, ResponseStatus status) {
         String sql = "UPDATE reports SET law_enforcement_status = ? WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, status.name());
             pstmt.setInt(2, reportId);
             pstmt.executeUpdate();
@@ -104,8 +103,7 @@ public class LawEnforcement implements Actioner {
      */
     private void updateCommunicationLogInDatabase(int reportId, String log) {
         String sql = "UPDATE reports SET communication_log = ? WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, log);
             pstmt.setInt(2, reportId);
             pstmt.executeUpdate();
@@ -124,9 +122,7 @@ public class LawEnforcement implements Actioner {
         String sql = "SELECT * FROM reports WHERE response_status IN ('Pending', 'In Progress') "
                 + "AND (assigned_department LIKE '%Law Enforcement%' OR law_enforcement_status IS NOT NULL)";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
                 Report report = createReportFromResultSet(rs);
@@ -180,8 +176,7 @@ public class LawEnforcement implements Actioner {
      */
     public void appendDisasterSpecificDetails(StringBuilder details, Report report) {
         String sql = "SELECT * FROM reports WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, report.getId());
             try (ResultSet rs = pstmt.executeQuery()) {

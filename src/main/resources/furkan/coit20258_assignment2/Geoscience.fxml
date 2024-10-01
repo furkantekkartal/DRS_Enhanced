@@ -39,15 +39,14 @@
         <VBox spacing="10" HBox.hgrow="ALWAYS">
             <TableView fx:id="reportTable" prefHeight="300.0" prefWidth="719.0" VBox.vgrow="ALWAYS">
                 <columns>
-        <TableColumn fx:id="idColumn" text="ID" />
-        <TableColumn fx:id="typeColumn" text="Type" />
-        <TableColumn fx:id="latitudeColumn" text="Latitude" />
-        <TableColumn fx:id="longitudeColumn" text="Longitude" />
-        <TableColumn fx:id="locationColumn" text="Location" />
-        <TableColumn fx:id="dateTimeColumn" text="Date/Time" />
-        <TableColumn fx:id="statusColumn" text="Report Status" />
-        <TableColumn fx:id="priorityColumn" text="Priority" />
-        <TableColumn fx:id="geoscienceStatusColumn" text="Geoscience Status" />
+                    <TableColumn fx:id="idColumn" text="ID" />
+                    <TableColumn fx:id="typeColumn" text="Type" />
+                    <TableColumn fx:id="latitudeColumn" text="Latitude" />
+                    <TableColumn fx:id="longitudeColumn" text="Longitude" />
+                    <TableColumn fx:id="locationColumn" text="Location" />
+                    <TableColumn fx:id="dateTimeColumn" text="Date/Time" />
+                    <TableColumn fx:id="statusColumn" text="Report Status" />
+                    <TableColumn fx:id="priorityColumn" text="Priority" />
                 </columns>
             </TableView>
         </VBox>
