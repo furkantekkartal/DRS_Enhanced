@@ -1,4 +1,4 @@
-package furkan.coit20258_assignment2;
+package coit20258assignment3;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -26,7 +26,6 @@ public class App extends Application {
      * @param args Command line arguments passed to the application
      */
     public static void main(String[] args) {
-        System.out.println("JavaFX Version: " + System.getProperty("javafx.version"));
         launch();
     }
 
@@ -39,19 +38,8 @@ public class App extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
-        // Uncomment the following line to set up the database
-        // DatabaseSetup.setupDatabase();
-
         // Set up the initial scene with the Login FXML
-        scene = new Scene(loadFXML("Login"), 400, 750);
-
-        // Commented out departments scene setups
-        // scene = new Scene(loadFXML("Coordinator"), 1050, 870);
-        // scene = new Scene(loadFXML("Meteorology"), 1150, 780);
-        // scene = new Scene(loadFXML("Fire"), 1150, 780);
-        //scene = new Scene(loadFXML("Health"), 1150, 780);
-        // scene = new Scene(loadFXML("LawEnforcement"), 1150, 780);
-        // scene = new Scene(loadFXML("UtilityCompanies"), 1100, 850);
+        scene = new Scene(loadFXML("/FXML/Login"), 400, 750);
         stage.setScene(scene);
         stage.show();
     }

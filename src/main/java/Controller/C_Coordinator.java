@@ -398,7 +398,7 @@ public class C_Coordinator extends BaseController {
             return;
         }
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/furkan/coit20258_assignment2/edit_report_window.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/edit_report_window.fxml"));
             Parent root = loader.load();
 
             C_EditReportWindow controller = loader.getController();
@@ -549,7 +549,7 @@ public class C_Coordinator extends BaseController {
             return;
         }
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/furkan/coit20258_assignment2/add_resource_window.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/add_resource_window.fxml"));
             Parent root = loader.load();
 
             C_AddResourceWindow controller = loader.getController();

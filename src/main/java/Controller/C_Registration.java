@@ -41,18 +41,22 @@ public class C_Registration implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         roleComboBox.getItems().addAll(
-            UserRole.Coordinator.toString(),
-            UserRole.FireDepartment.toString(),
-            UserRole.HealthDepartment.toString(),
-            UserRole.LawEnforcement.toString(),
-            UserRole.Meteorology.toString(),
-            UserRole.Geoscience.toString(),
-            UserRole.UtilityCompanies.toString()
+                UserRole.Coordinator.toString(),
+                UserRole.FireDepartment.toString(),
+                UserRole.HealthDepartment.toString(),
+                UserRole.LawEnforcement.toString(),
+                UserRole.Meteorology.toString(),
+                UserRole.Geoscience.toString(),
+                UserRole.UtilityCompanies.toString()
         );
     }
 
     @FXML
     private void handleRegister() {
+        if (!DatabaseConnection.isServerRunning()) {
+            showAlert(Alert.AlertType.ERROR, "Server Error", "The server is not running. Please start the server and try again.");
+            return;
+        }
         String username = usernameField.getText().trim();
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();

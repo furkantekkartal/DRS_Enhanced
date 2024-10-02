@@ -86,7 +86,7 @@ public class DatabaseConnection {
         }
     }
 
-    private static boolean isServerRunning() {
+    public static boolean isServerRunning() {
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(SERVER_HOST, SERVER_PORT), TIMEOUT);
             return true;
@@ -122,16 +122,20 @@ public class DatabaseConnection {
 
                 // Check if the stored role matches the selected role
                 // Allow admin to access any role
-                if (!storedRole.equalsIgnoreCase("admin") && !storedRole.equalsIgnoreCase(role)) {
+                if (storedRole.equalsIgnoreCase("admin")
+                        || storedRole.equalsIgnoreCase(role)) {
+                    return "LOGIN_SUCCESS";
+                }else if(storedRole.startsWith("Utility_") 
+                        && role.equals("UtilityCompanies")){
+                        return "LOGIN_SUCCESS"; 
+                 } else {
                     return "ROLE_MISMATCH";
                 }
-
-                return "LOGIN_SUCCESS";
             } else {
                 return "USER_NOT_FOUND";
             }
         } catch (SQLException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
             return "DATABASE_ERROR: " + e.getMessage();
         }
     }
@@ -254,6 +258,77 @@ public class DatabaseConnection {
             pstmt.setString(4, report.getPriorityLevel());
             pstmt.setInt(5, report.getId());
             pstmt.executeUpdate();
+        }
+    }
+
+    public static void updateReportFromEditWindow(Report report) throws SQLException {
+        if (server != null && !server.isRunning()) {
+            throw new SQLException("SERVER_NOT_RUNNING");
+        }
+
+        String sql = "UPDATE reports SET "
+                + "disaster_type = ?, location = ?, latitude = ?, longitude = ?, date_time = ?, "
+                + "reporter_name = ?, contact_info = ?, fire_intensity = ?, affected_area_size = ?, "
+                + "nearby_infrastructure = ?, wind_speed = ?, flood_risk = ?, evacuation_status = ?, "
+                + "magnitude = ?, depth = ?, aftershocks_expected = ?, water_level = ?, "
+                + "flood_evacuation_status = ?, infrastructure_damage = ?, slope_stability = ?, "
+                + "blocked_roads = ?, casualties_injuries = ?, disaster_description = ?, "
+                + "estimated_impact = ?, response_status = ?, assigned_department = ?, "
+                + "resources_needed = ?, communication_log = ?, priority_level = ?, "
+                + "fire_department_status = ?, health_department_status = ?, law_enforcement_status = ?, "
+                + "meteorology_status = ?, geoscience_status = ?, utility_companies_status = ?, "
+                + "utility_electricity_status = ?, utility_water_status = ?, utility_gas_status = ?, "
+                + "utility_telecommunications_status = ? "
+                + "WHERE id = ?";
+
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, report.getDisasterType());
+            pstmt.setString(2, report.getLocation());
+            pstmt.setDouble(3, report.getLatitude());
+            pstmt.setDouble(4, report.getLongitude());
+            pstmt.setString(5, report.getDateTime());
+            pstmt.setString(6, report.getReporterName());
+            pstmt.setString(7, report.getContactInfo());
+            pstmt.setString(8, report.getFireIntensity());
+            pstmt.setString(9, report.getAffectedAreaSize());
+            pstmt.setString(10, report.getNearbyInfrastructure());
+            pstmt.setString(11, report.getWindSpeed());
+            pstmt.setBoolean(12, report.getFloodRisk());
+            pstmt.setString(13, report.getEvacuationStatus());
+            pstmt.setString(14, report.getMagnitude());
+            pstmt.setString(15, report.getDepth());
+            pstmt.setBoolean(16, report.getAftershocksExpected());
+            pstmt.setString(17, report.getWaterLevel());
+            pstmt.setString(18, report.getFloodEvacuationStatus());
+            pstmt.setString(19, report.getInfrastructureDamage());
+            pstmt.setString(20, report.getSlopeStability());
+            pstmt.setString(21, report.getBlockedRoads());
+            pstmt.setString(22, report.getCasualtiesInjuries());
+            pstmt.setString(23, report.getDisasterDescription());
+            pstmt.setString(24, report.getEstimatedImpact());
+            pstmt.setString(25, report.getResponseStatus());
+            pstmt.setString(26, report.getAssignedDepartment());
+            pstmt.setString(27, report.getResourcesNeeded());
+            pstmt.setString(28, report.getCommunicationLog());
+            pstmt.setString(29, report.getPriorityLevel());
+            pstmt.setString(30, report.getDepartmentStatus(Department.FIRE_DEPARTMENT).name());
+            pstmt.setString(31, report.getDepartmentStatus(Department.HEALTH_DEPARTMENT).name());
+            pstmt.setString(32, report.getDepartmentStatus(Department.LAW_ENFORCEMENT).name());
+            pstmt.setString(33, report.getDepartmentStatus(Department.METEOROLOGY).name());
+            pstmt.setString(34, report.getDepartmentStatus(Department.GEOSCIENCE).name());
+            pstmt.setString(35, report.getDepartmentStatus(Department.UTILITY_COMPANIES).name());
+            pstmt.setString(36, report.getDepartmentStatus(Department.UTILITY_ELECTRICITY).name());
+            pstmt.setString(37, report.getDepartmentStatus(Department.UTILITY_WATER).name());
+            pstmt.setString(38, report.getDepartmentStatus(Department.UTILITY_GAS).name());
+            pstmt.setString(39, report.getDepartmentStatus(Department.UTILITY_TELECOMMUNICATIONS).name());
+            pstmt.setInt(40, report.getId());
+
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Updating report failed, no rows affected.");
+            }
+            System.out.println("Report updated successfully in the database.");
         }
     }
 
