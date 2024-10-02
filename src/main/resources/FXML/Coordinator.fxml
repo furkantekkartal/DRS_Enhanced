@@ -163,7 +163,7 @@
                         <TableColumn fx:id="utilityTelecomStatusColumn" text="Utility - Telecom" />
                     </columns>
                 </TableView>
-                <Button onAction="#refreshDisasterStatus" text="Refresh Disaster Status" />
+                <Button onAction="#refreshReports" text="Refresh Disaster Status" />
             </VBox>
         </Tab>
     </TabPane>

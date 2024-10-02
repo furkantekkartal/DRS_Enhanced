@@ -57,7 +57,7 @@ public class BaseController {
 
         Platform.runLater(() -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/furkan/coit20258_assignment2/MapView.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/MapView.fxml"));
                 Parent root = loader.load();
 
                 C_MapView controller = loader.getController();

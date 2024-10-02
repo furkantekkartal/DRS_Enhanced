@@ -86,7 +86,7 @@ public class DatabaseConnection {
         }
     }
 
-    private static boolean isServerRunning() {
+    public static boolean isServerRunning() {
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(SERVER_HOST, SERVER_PORT), TIMEOUT);
             return true;
@@ -122,16 +122,20 @@ public class DatabaseConnection {
 
                 // Check if the stored role matches the selected role
                 // Allow admin to access any role
-                if (!storedRole.equalsIgnoreCase("admin") && !storedRole.equalsIgnoreCase(role)) {
+                if (storedRole.equalsIgnoreCase("admin")
+                        || storedRole.equalsIgnoreCase(role)) {
+                    return "LOGIN_SUCCESS";
+                }else if(storedRole.startsWith("Utility_") 
+                        && role.equals("UtilityCompanies")){
+                        return "LOGIN_SUCCESS"; 
+                 } else {
                     return "ROLE_MISMATCH";
                 }
-
-                return "LOGIN_SUCCESS";
             } else {
                 return "USER_NOT_FOUND";
             }
         } catch (SQLException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
             return "DATABASE_ERROR: " + e.getMessage();
         }
     }

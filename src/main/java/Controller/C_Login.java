@@ -62,6 +62,11 @@ public class C_Login {
             return;
         }
 
+        if (!DatabaseConnection.isServerRunning()) {
+            showAlert(Alert.AlertType.ERROR, "Server Error", "The server is not running. Please start the server and try again.");
+            return;
+        }
+
         String loginResult = DatabaseConnection.validateLogin(username, password, selectedRole.toString());
         System.out.println("Login result: " + loginResult); // Debug print
 
@@ -192,8 +197,8 @@ public class C_Login {
                 ((C_LawEnforcement) controller).setCurrentUser(username);
             } else if (controller instanceof C_Meteorology) {
                 ((C_Meteorology) controller).setCurrentUser(username);
-//            } else if (controller instanceof C_Geoscience) {
-//                ((C_Geoscience) controller).setCurrentUser(username);
+            } else if (controller instanceof C_Geoscience) {
+                ((C_Geoscience) controller).setCurrentUser(username);
             } else if (controller instanceof C_UtilityCompanies) {
                 C_UtilityCompanies utilityController = (C_UtilityCompanies) controller;
                 utilityController.setCurrentUser(username);
@@ -221,6 +226,10 @@ public class C_Login {
      */
     @FXML
     private void handleReportDisaster() {
+        if (!isServerRunning()) {
+            showAlert(Alert.AlertType.ERROR, "Server Error", "The server is not running. Please start the server and try again.");
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/report_disaster.fxml"));
             Parent root = loader.load();
@@ -240,6 +249,10 @@ public class C_Login {
      */
     @FXML
     private void handleDatabaseSetup() {
+        if (!isServerRunning()) {
+            showAlert(Alert.AlertType.ERROR, "Server Error", "The server is not running. Please start the server and try again.");
+            return;
+        }
         try {
             DatabaseSetup.setupDatabase();
             showAlert(Alert.AlertType.INFORMATION, "Success", "Database setup completed successfully!");
@@ -249,11 +262,19 @@ public class C_Login {
         }
     }
 
+    private boolean isServerRunning() {
+        return DatabaseConnection.isServerRunning();
+    }
+
     /**
      * Handles the loading of sample data into the database.
      */
     @FXML
     private void handleLoadSampleData() {
+        if (!isServerRunning()) {
+            showAlert(Alert.AlertType.ERROR, "Server Error", "The server is not running. Please start the server and try again.");
+            return;
+        }
         try {
             CSVDataImporter.importAllData();
             showAlert(Alert.AlertType.INFORMATION, "Success", "Sample data loaded successfully!");
@@ -268,6 +289,10 @@ public class C_Login {
      */
     @FXML
     private void handleShowUsers() {
+        if (!isServerRunning()) {
+            showAlert(Alert.AlertType.ERROR, "Server Error", "The server is not running. Please start the server and try again.");
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/user_table.fxml"));
             Parent root = loader.load();
@@ -352,6 +377,10 @@ public class C_Login {
 
     @FXML
     private void handleRegister() {
+        if (!isServerRunning()) {
+            showAlert(Alert.AlertType.ERROR, "Server Error", "The server is not running. Please start the server and try again.");
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Registration.fxml"));
             Parent root = loader.load();
