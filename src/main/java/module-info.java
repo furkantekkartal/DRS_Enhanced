@@ -1,4 +1,4 @@
-module furkan.coit20258_assignment2 {
+module coit20258assignment3 {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.graphics;

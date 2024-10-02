@@ -85,13 +85,13 @@ public class C_LoginTest {
         assertFalse(loginController.validateLogin("john.smith", "Pass", UserRole.Coordinator),
                 "Login should be case-sensitive for password");
     }
-//
-//    @Test
-//    void UA010_testWrongRoleLogin() {
-//        // Test case: Login attempt with correct credentials but incorrect role
-//        // Expected: false (login failed due to role mismatch)
-//        // assertTrue is used instead of assertFalse to show Failure tests example
-//        assertTrue(loginController.validateLogin("john.smith", "pass", UserRole.FireDepartment),
-//                "Login with correct credentials but wrong role should return false");
-//    }
+
+    @Test
+    void UA010_testWrongRoleLogin() {
+        // Test case: Login attempt with correct credentials but incorrect role
+        // Expected: false (login failed due to role mismatch)
+        // assertTrue is used instead of assertFalse to show Failure tests example
+        assertTrue(loginController.validateLogin("john.smith", "pass", UserRole.FireDepartment),
+                "Login with correct credentials but wrong role should return false");
+    }
 }
